@@ -1,17 +1,17 @@
-// routes/user.js
 const express = require('express');
 const User = require('../models/user'); // import User model
 const router = express.Router();
 
-// POST route เพื่อบันทึกข้อมูลของผู้ใช้
+// POST route to save user data
 router.post('/save', async (req, res) => {
-  const { firstName, nickname, loginTime } = req.body;
+  const { firstName, nickname, loginTime, status } = req.body;
 
   try {
     const newUser = new User({
       firstName,
       nickname,
-      loginTime,
+      loginTime: new Date(loginTime), // Ensure it's a Date object
+      status, 
     });
 
     await newUser.save();
@@ -22,10 +22,30 @@ router.post('/save', async (req, res) => {
   }
 });
 
-// GET route เพื่อดึงข้อมูลทั้งหมดจาก MongoDB
+// POST route to save logout time
+router.post('/saveLogoutTime', async (req, res) => {
+  const { firstName, nickname, loginTime, logoutTime } = req.body;
+
+  try {
+    const user = await User.findOne({ firstName, nickname, loginTime: new Date(loginTime) });
+
+    if (user) {
+      user.logoutTime = new Date(logoutTime); // Save logout time as Date object
+      await user.save();
+      res.status(200).json({ message: 'Logout time saved successfully!' });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Error saving logout time:', error);
+    res.status(500).json({ message: 'Error saving logout time', error });
+  }
+});
+
+// GET route to fetch all user data
 router.get('/getUserData', async (req, res) => {
   try {
-    const users = await User.find(); // ดึงข้อมูลทั้งหมดจาก collection
+    const users = await User.find(); // Fetch all user data
     res.json(users);
   } catch (error) {
     console.error('Error fetching user data:', error);

@@ -1,24 +1,22 @@
-import React, { useState, useCallback } from 'react'; // เพิ่ม useCallback
+import React, { useState, useCallback } from 'react'; 
 import { TextField, Button, Box, Container, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-// จุดที่ต้องการให้ผู้ใช้เข้ามา (ในที่นี้คือค่าตัวอย่างของ Latitude และ Longitude)
 const requiredLocation = {
-  lat: 13.845965, 
-  lon: 100.525630, // ออฟฟิศเรา
+  lat: 13.845893, 
+  lon: 100.525539, // ออฟฟิศเรา
 };
 
 const LoginPage = () => {
   const [firstName, setFirstName] = useState('');
   const [nickname, setNickname] = useState('');
-  const [isLocationValid, setIsLocationValid] = useState(true); // สถานะการตรวจสอบตำแหน่ง
-  const [checkedDashboard, setCheckedDashboard] = useState(null); // เช็คบ็อกที่เลือก
-  const [checkedDashboard1, setCheckedDashboard1] = useState(false); // เช็คบ็อกสำหรับ Dashboard 1
+  const [isLocationValid, setIsLocationValid] = useState(true); 
+  const [checkedDashboard, setCheckedDashboard] = useState(null); 
+  const [checkedDashboard1, setCheckedDashboard1] = useState(false); 
   const navigate = useNavigate();
 
-  // ฟังก์ชันคำนวณระยะห่างระหว่างตำแหน่งสองจุด
   const getDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // รัศมีของโลก (กิโลเมตร)
+    const R = 6371; 
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLon = ((lon2 - lon1) * Math.PI) / 180;
 
@@ -28,34 +26,40 @@ const LoginPage = () => {
         Math.cos((lat2 * Math.PI) / 180) *
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    const distance = R * c; // ระยะห่างในกิโลเมตร
+    const distance = R * c; 
     return distance;
   };
 
-  // ใช้ useCallback เพื่อ memoize checkLocation
   const checkLocation = useCallback((position) => {
     const { latitude, longitude } = position.coords;
     const distance = getDistance(latitude, longitude, requiredLocation.lat, requiredLocation.lon);
     
     if (distance <= 1) {
-      setIsLocationValid(true); // ถ้าอยู่ในรัศมี 1 กิโลเมตร
+      setIsLocationValid(true); 
     } else {
-      setIsLocationValid(false); // ถ้าอยู่นอกเหนือรัศมี
+      setIsLocationValid(false); 
     }
   }, []); 
 
-  // ฟังก์ชันที่เรียกเมื่อผู้ใช้ส่งข้อมูล
   const handleSubmit = async (event) => {
     event.preventDefault();
-
-    // หากเลือก Checkbox1 (ไปหน้า Dashboard 1) ต้องตรวจสอบตำแหน่ง
+  
     if (checkedDashboard1 && !isLocationValid) {
       alert('คุณต้องอยู่ในรัศมี 1 กิโลเมตรจากออฟฟิศ');
       return;
     }
-
+  
     const currentLoginTime = new Date().toLocaleString(); 
-
+  
+    let status = '';
+    if (checkedDashboard === 1) {
+      status = 'มา';
+    } else if (checkedDashboard === 2) {
+      status = 'ลาป่วย';
+    } else if (checkedDashboard === 3) {
+      status = 'ลากิจ';
+    }
+  
     try {
       const response = await fetch('http://localhost:5000/api/user/save', {
         method: 'POST',
@@ -66,20 +70,20 @@ const LoginPage = () => {
           firstName,
           nickname,
           loginTime: currentLoginTime,
+          status, 
         }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         console.log('User data saved:', data);
-        // เมื่อเลือกเช็คบ็อกให้ไปยังแดชบอร์ดที่เลือก
         if (checkedDashboard === 1) {
-          navigate('/dashboard', { state: { firstName, nickname, loginTime: currentLoginTime } });
+          navigate('/dashboard', { state: { firstName, nickname, loginTime: currentLoginTime, status } });
         } else if (checkedDashboard === 2) {
-          navigate('/dashboard1', { state: { firstName, nickname, loginTime: currentLoginTime } });
+          navigate('/dashboard1', { state: { firstName, nickname, loginTime: currentLoginTime, status } });
         } else if (checkedDashboard === 3) {
-          navigate('/dashboard2', { state: { firstName, nickname, loginTime: currentLoginTime } });
+          navigate('/dashboard2', { state: { firstName, nickname, loginTime: currentLoginTime, status } });
         } else {
           alert('กรุณาเลือกสถานะ');
         }
@@ -92,18 +96,22 @@ const LoginPage = () => {
     }
   };
 
-  // เรียกใช้ navigator.geolocation
   React.useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(checkLocation, (error) => {
         console.error(error);
-        setIsLocationValid(false); // ถ้าไม่สามารถดึงตำแหน่งได้
+        setIsLocationValid(false); 
       });
     } else {
       console.log('Geolocation is not supported by this browser.');
       setIsLocationValid(false);
     }
-  }, [checkLocation]); // เพิ่ม checkLocation ใน dependency array
+  }, [checkLocation]); 
+
+  // เพิ่มปุ่ม Logout ตรงนี้
+  const handleLogout = () => {
+    navigate('/logout'); // เปลี่ยนเส้นทางไปยังหน้า logout
+  };
 
   return (
     <Container>
@@ -130,7 +138,7 @@ const LoginPage = () => {
                 checked={checkedDashboard === 1}
                 onChange={() => {
                   setCheckedDashboard(1);
-                  setCheckedDashboard1(true); // ตั้งค่า checkedDashboard1 เป็น true
+                  setCheckedDashboard1(true); 
                 }}
               />
             }
@@ -158,11 +166,15 @@ const LoginPage = () => {
             เข้างาน
           </Button>
         </form>
-        {!isLocationValid && checkedDashboard1 && (
+        {checkedDashboard1 && !isLocationValid && (
           <Typography color="error" sx={{ marginTop: 2 }}>
             คุณต้องอยู่ในรัศมี 1 กิโลเมตรจากออฟฟิศถึงจะเช็คอินเข้างานได้
           </Typography>
         )}
+        {/* ปุ่ม Logout ที่เพิ่มขึ้นมา */}
+        <Button variant="outlined" fullWidth sx={{ marginTop: 2 }} onClick={handleLogout}>
+          ตรวจสอบเวลา
+        </Button>
       </Box>
     </Container>
   );
