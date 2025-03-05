@@ -1,18 +1,19 @@
 import React, { useState, useCallback } from 'react'; // เพิ่ม useCallback
-import { TextField, Button, Box, Container, Typography } from '@mui/material';
+import { TextField, Button, Box, Container, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 // จุดที่ต้องการให้ผู้ใช้เข้ามา (ในที่นี้คือค่าตัวอย่างของ Latitude และ Longitude)
 const requiredLocation = {
   lat: 13.845965, 
   lon: 100.525630, // ออฟฟิศเรา
-
 };
 
 const LoginPage = () => {
   const [firstName, setFirstName] = useState('');
   const [nickname, setNickname] = useState('');
   const [isLocationValid, setIsLocationValid] = useState(true); // สถานะการตรวจสอบตำแหน่ง
+  const [checkedDashboard, setCheckedDashboard] = useState(null); // เช็คบ็อกที่เลือก
+  const [checkedDashboard1, setCheckedDashboard1] = useState(false); // เช็คบ็อกสำหรับ Dashboard 1
   const navigate = useNavigate();
 
   // ฟังก์ชันคำนวณระยะห่างระหว่างตำแหน่งสองจุด
@@ -47,7 +48,8 @@ const LoginPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (!isLocationValid) {
+    // หากเลือก Checkbox1 (ไปหน้า Dashboard 1) ต้องตรวจสอบตำแหน่ง
+    if (checkedDashboard1 && !isLocationValid) {
       alert('คุณต้องอยู่ในรัศมี 1 กิโลเมตรจากออฟฟิศ');
       return;
     }
@@ -71,7 +73,16 @@ const LoginPage = () => {
 
       if (response.ok) {
         console.log('User data saved:', data);
-        navigate('/dashboard', { state: { firstName, nickname, loginTime: currentLoginTime } });
+        // เมื่อเลือกเช็คบ็อกให้ไปยังแดชบอร์ดที่เลือก
+        if (checkedDashboard === 1) {
+          navigate('/dashboard', { state: { firstName, nickname, loginTime: currentLoginTime } });
+        } else if (checkedDashboard === 2) {
+          navigate('/dashboard1', { state: { firstName, nickname, loginTime: currentLoginTime } });
+        } else if (checkedDashboard === 3) {
+          navigate('/dashboard2', { state: { firstName, nickname, loginTime: currentLoginTime } });
+        } else {
+          alert('กรุณาเลือกสถานะ');
+        }
       } else {
         alert('กรุณากรอกข้อมูลให้ครบถ้วน');
       }
@@ -113,13 +124,43 @@ const LoginPage = () => {
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checkedDashboard === 1}
+                onChange={() => {
+                  setCheckedDashboard(1);
+                  setCheckedDashboard1(true); // ตั้งค่า checkedDashboard1 เป็น true
+                }}
+              />
+            }
+            label="มาทำงานปกติ"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checkedDashboard === 2}
+                onChange={() => setCheckedDashboard(2)}
+              />
+            }
+            label="ลาป่วย"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={checkedDashboard === 3}
+                onChange={() => setCheckedDashboard(3)}
+              />
+            }
+            label="ลากิจ"
+          />
           <Button type="submit" variant="contained" fullWidth sx={{ marginTop: 2 }}>
             เข้างาน
           </Button>
         </form>
-        {!isLocationValid && (
+        {!isLocationValid && checkedDashboard1 && (
           <Typography color="error" sx={{ marginTop: 2 }}>
-            คุณต้องอยู่ในรัศมี 1 กิโลเมตรจากออฟิศถึงจะเช็คอินเข้างานได้
+            คุณต้องอยู่ในรัศมี 1 กิโลเมตรจากออฟฟิศถึงจะเช็คอินเข้างานได้
           </Typography>
         )}
       </Box>

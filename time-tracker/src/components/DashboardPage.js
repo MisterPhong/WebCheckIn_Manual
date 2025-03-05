@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 const DashboardPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { firstName, nickname, loginTime } = location.state || {};
+  const { firstName, nickname, loginTime, additionalInfo } = location.state || {}; // รับข้อมูลจาก state ที่ส่งมาจากหน้าล็อกอิน
 
   const [userData, setUserData] = useState([]);
   const [remainingTime, setRemainingTime] = useState(0); // เวลาที่เหลือสำหรับการล็อกเอ้าท์
@@ -54,7 +54,7 @@ const DashboardPage = () => {
 
   // ล็อกเอ้าท์
   const handleLogout = () => {
-    navigate('/');
+    navigate('/'); // ไปหน้าล็อกอิน
   };
 
   // แปลงเวลา
@@ -70,6 +70,19 @@ const DashboardPage = () => {
   const formatLoginTime = (loginTime) => {
     return new Date(loginTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
   };
+
+
+
+  // ตรวจสอบข้อมูลจาก location.state
+  console.log(location.state);
+
+
+  // ตรวจสอบ loginTime และการคำนวณเวลา
+  console.log(loginTime);
+  const loginDate = new Date(loginTime);
+  const currentTime = new Date();
+  const timeDifference = 9 * 60 * 60 * 1000 - (currentTime - loginDate);
+  console.log(timeDifference);
 
   return (
     <Container component="main" maxWidth="xs">
@@ -89,17 +102,17 @@ const DashboardPage = () => {
             <Typography variant="h6">ชื่อ - สกุล: {firstName}</Typography>
             <Typography variant="h6">ชื่อเล่น: {nickname}</Typography>
             <Typography variant="h6">เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
+            <Typography variant="h6">เวลาออกงาน: {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 60 * 60 * 1000))}</Typography>
+
           </>
         ) : (
           <Typography variant="h6">No data available</Typography>
         )}
 
-        
         <Typography variant="h6" sx={{ marginTop: 2 }}>
           เหลือเวลาอีก: {formatTime(remainingTime)}&nbsp;นาที
         </Typography>
 
-        
         <Button
           variant="outlined"
           color="primary"
