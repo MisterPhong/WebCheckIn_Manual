@@ -1,30 +1,26 @@
 import React from 'react';
 import { Box, Container, Typography } from '@mui/material';
+import { Viewer, Worker } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const Manual = () => {
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
+
   return (
-    <Container>
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 8 }}>
-        <Typography variant="h5" gutterBottom>
+    <Container maxWidth="lg">
+      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
+        <Typography variant="h6" gutterBottom>
           คู่มือ
         </Typography>
 
-        {/* แสดงรูปภาพจากลิงก์ URL ภายนอก */}
-        <Box sx={{ marginTop: 4 }}>
-          <img
-            src="https://www.maxim.com/wp-content/uploads/2021/05/tom-cruise-top-gun.jpg"
-            alt="คู่มือ"
-            width="300"
-          />
+        {/* PDF Viewer (ปรับให้เต็มจอ) */}
+        <Box sx={{ width: '100%', height: '90vh', mt: 2, border: '1px solid #ccc' }}>
+          <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`}>
+            <Viewer fileUrl="/manual.pdf" plugins={[defaultLayoutPluginInstance]} />
+          </Worker>
         </Box>
-        <h3>
-          การขับ F-14 Tomcat ก็เริ่มต้นด้วยการนั่งลงบนเบาะนักบินสุดเท่ กดปุ่มเปิดเครื่อง ปั่นเครื่องยนต์ให้ดังแบบเท่ๆ จากนั้นก็เร่งเครื่องไปสุดๆ 
-          จนทะยานขึ้นฟ้าเหมือนจรวด พุ่งออกไปแบบ "ฟู้วววว" พร้อมกับปีกที่กางออกมาอย่างเท่!
-          เมื่อขึ้นฟ้าแล้ว ก็ถึงเวลาบินไปเรื่อยๆ หามุมเหมาะๆ เล็งเป้าหมาย ปุ่มไหนก็ไม่รู้ กดให้หมด! ขีปนาวุธพุ่งออกไปแบบ "ปิ้วๆๆๆๆ" 
-          เป้าหมายแตกกระจาย! ระหว่างนั้นก็มีเรดาร์โชว์จุดแดงๆ โผล่มา นักบินร่วม (RIO) ก็พูดอะไรไม่รู้ มองดูเท่ๆ แล้วก็บอกว่า "ล็อกเป้าได้เลย!"
-          ถึงเวลาลงจอด ก็เล็งไปที่เรือบรรทุกใหญ่ๆ ลงให้แบบนิ่มๆ เอาตะขอไปจับสายเคเบิลบนเรือให้เป๊ะ! ถ้าไม่ติดก็เอาซ้ำจนกว่าจะได้ 
-          แล้วก็ลงจอดอย่างเทพ "ปรี๊ดดดดด" เสร็จแล้วก็นั่งพักจิบกาแฟเหมือนไม่มีอะไรเกิดขึ้น!สรุป ขับ F-14 ก็ไม่ยาก นั่งขับ บิน ยิงๆๆ ปิ้วๆๆ แล้วก็ลงจอด!
-        </h3>
       </Box>
     </Container>
   );

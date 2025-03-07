@@ -1,27 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Box, Typography, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import {
+  Box,
+  Container,
+  Typography,
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardPage = () => {
   const navigate = useNavigate();
-  
-  // ดึงข้อมูลจาก localStorage (key: userSession)
-  const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
-  const { firstName, nickname, loginTime, status } = storedUser;
 
-  // สเตตต่าง ๆ
+  // อ่าน session จาก localStorage
+  const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
+  const { firstName, nickname, loginTime} = storedUser;
+
+  // สเตตสำหรับข้อมูลผู้ใช้ทั้งหมด (ที่โหลดจาก API)
   const [userData, setUserData] = useState([]);
+
+  // สเตตสำหรับเวลาเหลือ
   const [remainingTime, setRemainingTime] = useState(0);
+  // สเตตปุ่มออกงาน
   const [isLogoutEnabled, setIsLogoutEnabled] = useState(false);
+  // สเตตตรวจว่าผู้อยู่เกินระยะ 1 km หรือไม่
   const [isOutOfRange, setIsOutOfRange] = useState(false);
 
   // พิกัดออฟฟิศ
   const targetLat = 13.845893;
   const targetLon = 100.525539;
 
-  // ฟังก์ชันคำนวณระยะทาง
+  // ฟังก์ชันคำนวณระยะทาง (กม.)
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // km
+    const R = 6371;
     const dLat = ((lat2 - lat1) * Math.PI) / 180;
     const dLon = ((lon2 - lon1) * Math.PI) / 180;
     const a =
@@ -30,10 +49,10 @@ const DashboardPage = () => {
       Math.cos((lat2 * Math.PI) / 180) *
       Math.sin(dLon / 2) * Math.sin(dLon / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // ระยะทาง (กม.)
+    return R * c;
   };
 
-  // ดึงตำแหน่งผู้ใช้
+  // ฟังก์ชันดึงตำแหน่งผู้ใช้
   const getLocation = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -44,7 +63,7 @@ const DashboardPage = () => {
             targetLat,
             targetLon
           );
-          setIsOutOfRange(distance > 1);
+          setIsOutOfRange(distance > 1); // ถ้าเกิน 1 km ให้ถือว่า OutOfRange
         },
         (error) => {
           console.error('Error getting location:', error);
@@ -57,18 +76,34 @@ const DashboardPage = () => {
     }
   };
 
-  // ฟังก์ชันฟอร์แมตเวลาในตาราง
+
+  const formatDateTime = (timeString) => {
+    if (!timeString) return 'ยังไม่ออกงาน';
+    const dateObj = new Date(timeString);
+    return dateObj.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
+  };
+
+  // ฟังก์ชันแปลงเวลา (e.g. เข้างาน)
   const formatLoginTime = (timeString) => {
     if (!timeString) return '';
     const dateObj = new Date(timeString);
     if (isNaN(dateObj.getTime())) {
       return '';
     }
-    // แสดงผลเป็น HH:mm:ss
-    return dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    return dateObj.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
   };
 
-  // ฟังก์ชันฟอร์แมตเป็น H:M:S เหลือเวลา
+  // ฟังก์ชันแปลงเวลา (ms) => hh:mm:ss เหลือเวลา
   const formatTime = (ms) => {
     const seconds = Math.floor((ms / 1000) % 60);
     const minutes = Math.floor((ms / (1000 * 60)) % 60);
@@ -78,12 +113,12 @@ const DashboardPage = () => {
             ${seconds.toString().padStart(2, '0')}`;
   };
 
-  // เมื่อคลิกออกงาน
+  // ฟังก์ชันออกงาน
   const handleLogout = async () => {
     const currentTime = new Date().toISOString();
 
     try {
-      // บันทึกเวลาออกงานในฝั่งเซิร์ฟเวอร์
+      // เรียก API saveLogoutTime
       const response = await fetch('http://localhost:5000/api/user/saveLogoutTime', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,20 +139,20 @@ const DashboardPage = () => {
       console.error('Error sending logout time:', error);
     }
 
-    // ลบข้อมูล session ใน localStorage
+    // ลบ session ใน localStorage
     localStorage.removeItem('userSession');
+    // กลับหน้าแรก
     navigate('/');
   };
 
-  // ใช้ useEffect โหลดข้อมูล และคำนวณเวลา
   useEffect(() => {
-    // ถ้าไม่มีข้อมูลใน localStorage แปลว่ายังไม่ login => กลับไปหน้าแรก
+    // ถ้าไม่มีข้อมูลใน localStorage => ไปหน้าแรก
     if (!firstName || !loginTime) {
       navigate('/');
       return;
     }
 
-    // ดึงข้อมูลผู้ใช้จาก API เพื่อแสดงในตาราง
+    // ดึงข้อมูลทั้งหมดมาแสดงในตาราง
     const fetchUserData = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/user/getUserData');
@@ -129,10 +164,10 @@ const DashboardPage = () => {
     };
     fetchUserData();
 
-    // คำนวณเวลาที่เหลือ (ตัวอย่างสมมติให้ครบ 9 ชั่วโมง)
+    // คำนวณเวลาที่เหลือ 9 ชม.
     const loginDate = new Date(loginTime);
-    const currentTime = new Date();
-    const timeDifference = 9 * 60 * 60 * 1000 - (currentTime - loginDate);
+    const now = new Date();
+    const timeDifference = 9 * 3600000 - (now - loginDate);
 
     if (timeDifference > 0) {
       setRemainingTime(timeDifference);
@@ -141,10 +176,11 @@ const DashboardPage = () => {
       setIsLogoutEnabled(true);
     }
 
-    const interval = setInterval(() => {
+    // เริ่มจับเวลานับถอยหลัง
+    const intervalId = setInterval(() => {
       setRemainingTime((prev) => {
         if (prev <= 1000) {
-          clearInterval(interval);
+          clearInterval(intervalId);
           setIsLogoutEnabled(true);
           return 0;
         }
@@ -152,104 +188,132 @@ const DashboardPage = () => {
       });
     }, 1000);
 
-    // เรียกฟังก์ชัน getLocation เพื่อเช็คว่าผู้ใช้อยู่ในรัศมีออกงานไหม
+    // เช็คพิกัด
     getLocation();
 
-    // เคลียร์ interval เมื่อ component unmount
-    return () => clearInterval(interval);
+    // Clear interval เมื่อ unmount
+    return () => clearInterval(intervalId);
   }, [firstName, loginTime, navigate]);
 
+  const filteredData = userData.filter(
+    (user) => user.firstName === firstName && user.nickname === nickname
+  );
+
+
   return (
-    <Container component="main" maxWidth="xs">
-      <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop: 8 }}>
-        <Typography variant="h5" component="h1" gutterBottom>
-          ยินดีต้อนรับเข้าออฟฟิศจร้าาาาาาาา
-        </Typography>
-
-        {firstName && loginTime ? (
-          <>
-            <Typography variant="h6">ชื่อ - สกุล: {firstName}</Typography>
-            <Typography variant="h6">ชื่อเล่น: {nickname}</Typography>
-            <Typography variant="h6">เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
-            <Typography variant="h6">
-              เวลาออกงาน: {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
+    <Box
+      sx={{
+        minHeight: '100vh',
+        width: '100vw',
+        // พื้นหลังไล่สี
+        background: 'linear-gradient(to bottom right, #eff1f3, #ffffff)',
+        py: 4,
+      }}
+    >
+      <Container maxWidth="md">
+        {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
+        <Card sx={{ mb: 4, boxShadow: 4 }}>
+          <CardContent>
+            <Typography variant="h5" align="center" gutterBottom>
+              ยินดีต้อนรับเข้าออฟฟิศจร้าาาาาาาา
             </Typography>
-          </>
-        ) : (
-          <Typography variant="h6">No data available</Typography>
-        )}
 
-        <Typography variant="h6" sx={{ marginTop: 2 }}>
-          เหลือเวลาอีก: {formatTime(remainingTime)}
-        </Typography>
+            {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}
+            {firstName && loginTime ? (
+              <>
+                <Typography>ชื่อ - สกุล: {firstName}</Typography>
+                <Typography>ชื่อเล่น: {nickname}</Typography>
+                <Typography>เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
+                <Typography>
+                  เวลาออกงาน: {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
+                </Typography>
+                <Box sx={{ my: 2 }}>
+                  <Typography>เหลือเวลาอีก: {formatTime(remainingTime)}</Typography>
+                </Box>
 
-        <Button
-          variant="outlined"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 2 }}
-          onClick={handleLogout}
-          disabled={!isLogoutEnabled || isOutOfRange} 
-        >
-          ออกงาน
-        </Button>
-
-        {isOutOfRange && (
-          <Typography variant="body2" sx={{ color: 'red', marginTop: 2 }}>
-            คุณอยู่นอกเขต 1 กิโลเมตร ไม่สามารถออกงานได้
-          </Typography>
-        )}
-      </Box>
-
-      {/* ตารางแสดงรายชื่อผู้ใช้ */}
-      <TableContainer
-        component={Paper}
-        sx={{
-          position: 'fixed',
-          bottom: 20,
-          right: 20,
-          width: '300px',
-          maxHeight: '300px',
-          overflowY: 'auto',
-          boxShadow: 3,
-        }}
-      >
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>ชื่อ - สกุล</TableCell>
-              <TableCell>ชื่อเล่น</TableCell>
-              <TableCell>เวลาเข้างาน</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {userData.length > 0 ? (
-              userData.map((user, index) => (
-                <TableRow key={index}>
-                  <TableCell>{user.firstName} {user.lastName}</TableCell>
-                  <TableCell>{user.nickname}</TableCell>
-                  <TableCell>{formatLoginTime(user.loginTime)}</TableCell>
-                </TableRow>
-              ))
+                {/* ปุ่มออกงาน */}
+                <Button
+                  variant="contained"
+                  color="primary"
+                  fullWidth
+                  disabled={!isLogoutEnabled || isOutOfRange}
+                  onClick={handleLogout}
+                >
+                  ออกงาน
+                </Button>
+                {isOutOfRange && (
+                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                    คุณอยู่นอกเขต 1 กิโลเมตร ไม่สามารถออกงานได้
+                  </Typography>
+                )}
+              </>
             ) : (
-              <TableRow>
-                <TableCell colSpan={3}>ไม่พบข้อมูลผู้ใช้</TableCell>
-              </TableRow>
+              <Typography variant="h6">No data available</Typography>
             )}
-          </TableBody>
-        </Table>
-      </TableContainer>
+          </CardContent>
 
-      <Button
-        type="submit"
-        variant="contained"
-        fullWidth
-        sx={{ marginTop: 2 }}
-        onClick={() => navigate('/')}
-      >
-        กลับไปหน้าแรก
-      </Button>
-    </Container>
+          <CardActions sx={{ justifyContent: 'center' }}>
+            <Button variant="outlined" onClick={() => navigate('/')}>
+              กลับไปหน้าแรก
+            </Button>
+          </CardActions>
+        </Card>
+
+        {/* Card สอง: ตารางข้อมูลผู้ใช้ */}
+        <Card sx={{ boxShadow: 4 }}>
+          {/* ส่วนตารางแสดงรายชื่อผู้ใช้ */}
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              สถิติ (ประวัติการเข้า-ออกงานย้อนหลัง)
+            </Typography>
+            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+              <Table size="small" stickyHeader>
+                <TableHead>
+                  <TableRow sx={{ '& th': { backgroundColor: '#f0f0f0', fontWeight: 'bold' } }}>
+                    <TableCell>ลำดับ</TableCell>
+                    <TableCell>ชื่อ - สกุล</TableCell>
+                    <TableCell>ชื่อเล่น</TableCell>
+                    <TableCell>สถานะ</TableCell>
+                    <TableCell>เวลาเข้างาน</TableCell>
+                    <TableCell>เวลาออกงาน</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredData.length > 0 ? (
+                    filteredData.map((user, index) => (
+                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{user.firstName} {user.lastName}</TableCell>
+                        <TableCell>{user.nickname}</TableCell>
+                        <TableCell>{user.status || '-'}</TableCell>
+
+                        {/* ถ้าสถานะเป็น 'ลาป่วย' หรือ 'ลากิจ' ให้แสดงตามประเภทการลา */}
+                        <TableCell>
+                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                            : user.status === 'ลากิจ' ? 'ลากิจ'
+                              : formatDateTime(user.loginTime)}
+                        </TableCell>
+                        <TableCell>
+                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                            : user.status === 'ลากิจ' ? 'ลากิจ'
+                              : user.logoutTime
+                                ? formatDateTime(user.logoutTime)
+                                : 'ยังไม่ออกงาน'}
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={6} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
   );
 };
 

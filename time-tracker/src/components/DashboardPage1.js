@@ -1,18 +1,34 @@
-import React, { useEffect } from 'react';
-import { Container, Box, Typography, Button } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import {
+  Container,
+  Box,
+  Typography,
+  Button,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardPage1 = () => {
   const navigate = useNavigate();
 
-  // สมมติเราเก็บ userSession ใน localStorage จากหน้า LoginPage
+  // ดึงข้อมูลจาก localStorage (ของผู้ใช้ที่ล็อกอิน)
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
   const { firstName, nickname, loginTime, status } = storedUser;
 
-  // ฟังก์ชันแปลงวันที่/เวลา
-  const formatLoginTime = (timeString) => {
-    if (!timeString) return '';
-    return new Date(timeString).toLocaleTimeString([], {
+  // State สำหรับเก็บข้อมูลจาก MongoDB
+  const [userData, setUserData] = useState([]);
+
+  // ฟังก์ชันแปลงเวลาเป็น HH:mm:ss
+  const formatDateTime = (timeString) => {
+    if (!timeString) return 'ยังไม่ออกงาน';
+    const dateObj = new Date(timeString);
+    return dateObj.toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit',
@@ -20,20 +36,48 @@ const DashboardPage1 = () => {
     });
   };
 
-  // ไปหน้า Welcome เฉย ๆ ไม่ลบ session
-  const handleGoBack = () => {
-    navigate('/');
-  };
-
   useEffect(() => {
-    // ถ้าไม่มีข้อมูลใน localStorage ก็ให้กลับไปหน้า Welcome
-    if (!firstName || !loginTime) {
-      navigate('/');
+    if (!firstName || !nickname) {
+      navigate('/'); // ถ้าไม่มีข้อมูลใน localStorage ให้กลับหน้าแรก
+      return;
     }
-  }, [firstName, loginTime, navigate]);
+
+    // ✅ ดึงข้อมูลจาก MongoDB ผ่าน API
+    const fetchUserData = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/user/getUserData'); // เรียก API จาก Backend
+        const data = await response.json();
+        setUserData(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    fetchUserData();
+
+    // ✅ ตั้งเวลาให้ออกจากระบบตอนเที่ยงคืน
+    const now = new Date();
+    const midnight = new Date(now);
+    midnight.setHours(24, 0, 0, 0); // ตั้งเวลาเป็น 00:00:00 ของวันถัดไป
+    const timeUntilMidnight = midnight - now; // คำนวณเวลาที่เหลือ
+
+    console.log(`ระบบจะออกจากระบบในอีก ${timeUntilMidnight / 1000} วินาที`);
+
+    const timeout = setTimeout(() => {
+      console.log("ถึงเวลาเที่ยงคืน ออกจากระบบ...");
+      localStorage.removeItem('userSession'); // ลบ session ออกจาก localStorage
+      navigate('/'); // กลับไปหน้า Welcome
+    }, timeUntilMidnight); // ออกจากระบบเมื่อถึงเที่ยงคืน
+
+    return () => clearTimeout(timeout); // เคลียร์ timeout เมื่อ component unmount
+  }, [firstName, nickname, navigate]);
+
+  // กรองเฉพาะข้อมูลของตัวเองจาก MongoDB
+  const filteredData = userData.filter(
+    (user) => user.firstName === firstName && user.nickname === nickname
+  );
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="md">
       <Box
         sx={{
           display: 'flex',
@@ -51,7 +95,7 @@ const DashboardPage1 = () => {
           <>
             <Typography variant="h6">ชื่อ - สกุล: {firstName}</Typography>
             <Typography variant="h6">ชื่อเล่น: {nickname}</Typography>
-            <Typography variant="h6">เวลากรอกฟอร์ม: {formatLoginTime(loginTime)}</Typography>
+            <Typography variant="h6">เวลากรอกฟอร์ม: {formatDateTime(loginTime)}</Typography>
             <Typography variant="h6">สถานะ: {status || 'ลาป่วย'}</Typography>
 
             <Button
@@ -59,7 +103,7 @@ const DashboardPage1 = () => {
               color="primary"
               fullWidth
               sx={{ marginTop: 2 }}
-              onClick={handleGoBack}
+              onClick={() => navigate('/')}
             >
               กลับหน้าแรก
             </Button>
@@ -67,6 +111,57 @@ const DashboardPage1 = () => {
         ) : (
           <Typography variant="h6">No data available</Typography>
         )}
+      </Box>
+
+      {/* ตารางแสดงข้อมูลย้อนหลัง */}
+      <Box sx={{ marginTop: 4 }}>
+        <Typography variant="h6" gutterBottom>
+          สถิติ (ประวัติการเข้า-ออกงานย้อนหลัง)
+        </Typography>
+        <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+          <Table size="small" stickyHeader>
+            <TableHead>
+              <TableRow sx={{ '& th': { backgroundColor: '#f0f0f0', fontWeight: 'bold' } }}>
+                <TableCell>ลำดับ</TableCell>
+                <TableCell>ชื่อ - สกุล</TableCell>
+                <TableCell>ชื่อเล่น</TableCell>
+                <TableCell>สถานะ</TableCell>
+                <TableCell>เวลาเข้างาน</TableCell>
+                <TableCell>เวลาออกงาน</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredData.length > 0 ? (
+                filteredData.map((user, index) => (
+                  <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                    <TableCell>{index + 1}</TableCell>
+                    <TableCell>{user.firstName} {user.lastName}</TableCell>
+                    <TableCell>{user.nickname}</TableCell>
+                    <TableCell>{user.status || '-'}</TableCell>
+
+                    {/* ถ้าสถานะเป็น 'ลาป่วย' หรือ 'ลากิจ' ให้แสดงตามประเภทการลา */}
+                    <TableCell>
+                      {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                        : user.status === 'ลากิจ' ? 'ลากิจ'
+                          : formatDateTime(user.loginTime)}
+                    </TableCell>
+                    <TableCell>
+                      {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                        : user.status === 'ลากิจ' ? 'ลากิจ'
+                          : user.logoutTime
+                            ? formatDateTime(user.logoutTime)
+                            : 'ยังไม่ออกงาน'}
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
       </Box>
     </Container>
   );
