@@ -5,7 +5,9 @@ import DashboardPage from './components/DashboardPage';
 import DashboardPage1 from './components/DashboardPage1';
 import DashboardPage2 from './components/DashboardPage2';
 import Welcome from './components/Welcome';
+import ChnageManu from './components/ChnageManu';
 import Manual from './components/Manual';
+import ManualSup from './components/ManualS';
 
 const App = () => {
   return (
@@ -16,6 +18,8 @@ const App = () => {
         <Route path="/dashboard1" element={<DashboardPage1 />} />
         <Route path="/dashboard2" element={<DashboardPage2 />} />
         <Route path="/manuals" element={<Manual />} />
+        <Route path="/menu" element={<ChnageManu />} />
+        <Route path="/menus" element={<ManualSup />} />
         <Route path="/" element={<Welcome />} />
       </Routes>
     </Router>

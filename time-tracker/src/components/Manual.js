@@ -12,7 +12,7 @@ const Manual = () => {
     <Container maxWidth="lg">
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mt: 4 }}>
         <Typography variant="h6" gutterBottom>
-          คู่มือ
+          คู่มือ QUick
         </Typography>
 
         {/* PDF Viewer (ปรับให้เต็มจอ) */}

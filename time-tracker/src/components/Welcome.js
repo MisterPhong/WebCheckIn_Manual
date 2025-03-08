@@ -10,7 +10,7 @@ const Welcome = () => {
   };
 
   const handleManual = () => {
-    navigate('/manuals');
+    navigate('/menu');
   };
 
   return (
