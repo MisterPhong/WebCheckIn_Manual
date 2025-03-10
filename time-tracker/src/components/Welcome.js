@@ -24,8 +24,8 @@ const Welcome = () => {
         background: 'linear-gradient(to bottom right,rgba(254, 255, 255, 0.81),rgb(136, 222, 251))',
         position: 'relative', // เพิ่ม position relative
       }}
-    >
-      {/* โลโก้ด้านบนขวา */}
+    >  
+    {/* Logoบริษัท */}
       <Box
         sx={{
           position: 'absolute',
@@ -125,9 +125,6 @@ const Welcome = () => {
             </Box>
           </CardContent>
           <CardActions sx={{ justifyContent: 'center', mb: 1 }}>
-            <Typography variant="caption" color="textSecondary">
-              &copy; 2024 มอนิ่งจร้าาาาา By ยังต่อ
-            </Typography>
           </CardActions>
         </Card>
       </Container>
