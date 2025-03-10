@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, Container, CardActions, } from '@mui/material';
+import { Box, Typography, Card, CardContent, Container, CardActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Welcome = () => {
@@ -21,26 +21,39 @@ const Welcome = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // พื้นหลังไล่สี (Gradient)
-        background: 'linear-gradient(to bottom right, #dfe9f3, #ffffff)',
+        background: 'linear-gradient(to bottom right,rgba(254, 255, 255, 0.81),rgb(136, 222, 251))',
+        position: 'relative', // เพิ่ม position relative
       }}
     >
+      {/* โลโก้ด้านบนขวา */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 16,
+        }}
+      >
+        <img
+          src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png" // ใช้ URL ที่ถูกต้อง
+          alt="IRCP Logo"
+          style={{ width: 200, height: 200, objectFit: 'contain' }}
+        />
+      </Box>
 
       <Container maxWidth="sm">
         <Card sx={{ boxShadow: 5, borderRadius: 2 }}>
           <CardContent>
-
             <Typography
               variant="h4"
               align="center"
+              color='#0b4999'
               sx={{ fontWeight: 'bold', marginBottom: 4 }}
             >
-              เวลโคมี
+              IRCP INTERN
             </Typography>
 
             {/* 2 บล็อก */}
             <Box sx={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
-            {/* เข้างาน */}
+              {/* เข้างาน */}
               <Box
                 sx={{
                   width: 200,
@@ -54,6 +67,10 @@ const Welcome = () => {
                   borderRadius: 2,
                   cursor: 'pointer',
                   boxShadow: 3,
+                  transition:'transform 0.3s ease,box-shadow 0.3s ease','&:hover': {
+                    transform: 'translateY(-10px)',
+                    boxShadow: 10,
+                  },
                 }}
                 onClick={handleLogin}
               >
@@ -85,6 +102,10 @@ const Welcome = () => {
                   borderRadius: 2,
                   cursor: 'pointer',
                   boxShadow: 3,
+                  transition:'transform 0.3s ease,box-shadow 0.3s ease','&:hover': {
+                    transform: 'translateY(-10px)',
+                    boxShadow: 10,
+                  },
                 }}
                 onClick={handleManual}
               >

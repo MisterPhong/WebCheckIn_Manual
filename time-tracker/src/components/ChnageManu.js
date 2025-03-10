@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, Container, CardActions, } from '@mui/material';
+import { Box, Container, Typography, Button, Card, CardContent, CardActions } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const ChnageManu = () => {
@@ -21,18 +21,34 @@ const ChnageManu = () => {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        // พื้นหลังไล่สี (Gradient)
-        background: 'linear-gradient(to bottom right, #dfe9f3, #ffffff)',
+        background: 'linear-gradient(to bottom right,rgba(254, 255, 255, 0.81),rgb(136, 222, 251))',
+        position: 'relative',
       }}
     >
+      {/* ปุ่มย้อนกลับ */}
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ position: 'absolute', top: 20, left: 20 }}
+        onClick={() => navigate(-1)} // กลับไปหน้าก่อนหน้า
+      >
+        ย้อนกลับ
+      </Button>
+            <Box sx={{ position: 'absolute', top: 16 }}>
+              <img
+                src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
+                alt="IRCP Logo"
+                style={{ width: 200, height: 200, objectFit: 'contain' }}
+              />
+            </Box>
 
       <Container maxWidth="sm">
         <Card sx={{ boxShadow: 5, borderRadius: 2 }}>
           <CardContent>
-
             <Typography
               variant="h4"
               align="center"
+              color='#0b4999'
               sx={{ fontWeight: 'bold', marginBottom: 4 }}
             >
               เลือกคู่มือ
@@ -40,7 +56,7 @@ const ChnageManu = () => {
 
             {/* 2 บล็อก */}
             <Box sx={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
-            {/* เข้างาน */}
+              {/* คู่มือ Quick */}
               <Box
                 sx={{
                   width: 200,
@@ -54,6 +70,11 @@ const ChnageManu = () => {
                   borderRadius: 2,
                   cursor: 'pointer',
                   boxShadow: 3,
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-10px)',
+                    boxShadow: 10,
+                  },
                 }}
                 onClick={handleManul}
               >
@@ -67,11 +88,11 @@ const ChnageManu = () => {
                     borderRadius: 1,
                   }}
                 >
-                  คู่มือ Quick
+                  Quick Start Guide
                 </Typography>
               </Box>
 
-              {/* คู่มือ */}
+              {/* คู่มือ Sup */}
               <Box
                 sx={{
                   width: 200,
@@ -85,6 +106,11 @@ const ChnageManu = () => {
                   borderRadius: 2,
                   cursor: 'pointer',
                   boxShadow: 3,
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
+                    transform: 'translateY(-10px)',
+                    boxShadow: 10,
+                  },
                 }}
                 onClick={handleManualQ}
               >
@@ -98,7 +124,7 @@ const ChnageManu = () => {
                     borderRadius: 1,
                   }}
                 >
-                  คู่มือ Sup
+                  คู่มือการทำงาน
                 </Typography>
               </Box>
             </Box>
