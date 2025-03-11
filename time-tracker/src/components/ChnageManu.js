@@ -34,6 +34,7 @@ const ChnageManu = () => {
       >
         ย้อนกลับ
       </Button>
+      {/* Logoบริษัท */}
             <Box sx={{ position: 'absolute', top: 16 }}>
               <img
                 src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
@@ -130,9 +131,12 @@ const ChnageManu = () => {
             </Box>
           </CardContent>
           <CardActions sx={{ justifyContent: 'center', mb: 1 }}>
+<<<<<<< HEAD
             <Typography variant="caption" color="textSecondary">
               
             </Typography>
+=======
+>>>>>>> a53aa5ec685ec557d6ce9963e310638d094fd4cb
           </CardActions>
         </Card>
       </Container>

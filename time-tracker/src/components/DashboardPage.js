@@ -210,6 +210,7 @@ const DashboardPage = () => {
         py: 4,
       }}
     >
+      {/* Logoบริษัท */}
             <Box sx={{ position: 'absolute', top: -30, right: 50 }}>
               <img
                 src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
@@ -221,8 +222,13 @@ const DashboardPage = () => {
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         <Card sx={{ mb: 4, boxShadow: 4 }}>
           <CardContent>
+<<<<<<< HEAD
             <Typography variant="h5" align="center" gutterBottom>
               Welcome To Office
+=======
+            <Typography variant="h5" align="center" gutterBottom color='#0b4999'>
+              บันทึกเวลาเข้าทำงาน
+>>>>>>> a53aa5ec685ec557d6ce9963e310638d094fd4cb
             </Typography>
 
             {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}
@@ -271,12 +277,12 @@ const DashboardPage = () => {
           {/* ส่วนตารางแสดงรายชื่อผู้ใช้ */}
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              สถิติ (ประวัติการเข้า-ออกงานย้อนหลัง)
+              ประวัติการเข้า-ออกงาน
             </Typography>
             <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
               <Table size="small" stickyHeader>
                 <TableHead>
-                  <TableRow sx={{ '& th': { backgroundColor: '#f0f0f0', fontWeight: 'bold' } }}>
+                  <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
                     <TableCell>ชื่อ - สกุล</TableCell>
                     <TableCell>ชื่อเล่น</TableCell>
@@ -288,7 +294,7 @@ const DashboardPage = () => {
                 <TableBody>
                   {filteredData.length > 0 ? (
                     filteredData.map((user, index) => (
-                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
                         <TableCell>{index + 1}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>

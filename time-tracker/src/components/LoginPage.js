@@ -134,7 +134,7 @@ const LoginPage = () => {
         ย้อนกลับ
       </Button>
 
-      {/* โลโก้ */}
+      {/* Logoบริษัท */}
       <Box sx={{ position: 'absolute', top: 16 }}>
         <img
           src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
@@ -178,9 +178,6 @@ const LoginPage = () => {
           </CardContent>
 
           <CardActions sx={{ justifyContent: 'center', mb: 1 }}>
-            <Typography variant="caption" color="textSecondary">
-           
-            </Typography>
           </CardActions>
         </Card>
       </Container>

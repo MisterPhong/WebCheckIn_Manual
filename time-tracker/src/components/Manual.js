@@ -12,7 +12,7 @@ const Manual = () => {
 
   return (
     <Box sx={{ backgroundColor: '#e0f7fa', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Box sx={{ position: 'absolute', top: -30, right: 5 }}>
+      <Box sx={{ position: 'absolute', top: -30, right: 5 }}>{/* Logoบริษัท */}
         <img
           src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
           alt="IRCP Logo"
