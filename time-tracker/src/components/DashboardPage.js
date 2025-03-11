@@ -222,13 +222,8 @@ const DashboardPage = () => {
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         <Card sx={{ mb: 4, boxShadow: 4 }}>
           <CardContent>
-<<<<<<< HEAD
             <Typography variant="h5" align="center" gutterBottom>
               Welcome To Office
-=======
-            <Typography variant="h5" align="center" gutterBottom color='#0b4999'>
-              บันทึกเวลาเข้าทำงาน
->>>>>>> a53aa5ec685ec557d6ce9963e310638d094fd4cb
             </Typography>
 
             {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}

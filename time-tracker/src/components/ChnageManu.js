@@ -131,12 +131,9 @@ const ChnageManu = () => {
             </Box>
           </CardContent>
           <CardActions sx={{ justifyContent: 'center', mb: 1 }}>
-<<<<<<< HEAD
             <Typography variant="caption" color="textSecondary">
               
             </Typography>
-=======
->>>>>>> a53aa5ec685ec557d6ce9963e310638d094fd4cb
           </CardActions>
         </Card>
       </Container>
