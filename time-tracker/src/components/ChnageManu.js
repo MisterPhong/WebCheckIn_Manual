@@ -131,7 +131,7 @@ const ChnageManu = () => {
           </CardContent>
           <CardActions sx={{ justifyContent: 'center', mb: 1 }}>
             <Typography variant="caption" color="textSecondary">
-              &copy; 2024 มอนิ่งจร้าาาาา By ยังต่อ
+              
             </Typography>
           </CardActions>
         </Card>

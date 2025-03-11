@@ -164,7 +164,7 @@ const DashboardPage = () => {
     };
     fetchUserData();
 
-    // คำนวณเวลาที่เหลือ 9 ชม.
+    // คำนวณเวลาที่เหลือ
     const loginDate = new Date(loginTime);
     const now = new Date();
     const timeDifference = 9 * 3600000 - (now - loginDate);
@@ -222,7 +222,7 @@ const DashboardPage = () => {
         <Card sx={{ mb: 4, boxShadow: 4 }}>
           <CardContent>
             <Typography variant="h5" align="center" gutterBottom>
-              ยินดีต้อนรับเข้าออฟฟิศจร้าาาาาาาา
+              Welcome To Office
             </Typography>
 
             {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}

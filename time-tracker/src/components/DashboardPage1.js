@@ -42,7 +42,7 @@ const DashboardPage1 = () => {
       return;
     }
 
-    // ✅ ดึงข้อมูลจาก MongoDB ผ่าน API
+    // ดึงข้อมูลจาก MongoDB ผ่าน API
     const fetchUserData = async () => {
       try {
         const response = await fetch('http://localhost:5000/api/user/getUserData'); // เรียก API จาก Backend
@@ -54,7 +54,7 @@ const DashboardPage1 = () => {
     };
     fetchUserData();
 
-    // ✅ ตั้งเวลาให้ออกจากระบบตอนเที่ยงคืน
+    // ตั้งเวลาให้ออกจากระบบตอนเที่ยงคืน
     const now = new Date();
     const midnight = new Date(now);
     midnight.setHours(24, 0, 0, 0); // ตั้งเวลาเป็น 00:00:00 ของวันถัดไป

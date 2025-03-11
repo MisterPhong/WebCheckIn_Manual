@@ -5,7 +5,7 @@ const userSchema = new mongoose.Schema({
   nickname: { type: String, required: true },
   loginTime: { type: Date, required: true },
   status: { type: String, required: true },
-  logoutTime: { type: Date }, // Make logoutTime optional
+  logoutTime: { type: Date },
 }, { versionKey: false });
 
 const User = mongoose.model('User', userSchema);

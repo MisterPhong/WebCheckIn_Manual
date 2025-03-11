@@ -51,7 +51,7 @@ const Manual = () => {
             boxShadow: 4,
           }}>
             <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`}>
-              <Viewer fileUrl="/manual.pdf" plugins={[defaultLayoutPluginInstance]} />
+              <Viewer fileUrl="/QSG.pdf" plugins={[defaultLayoutPluginInstance]} />
             </Worker>
           </Box>
         </Box>

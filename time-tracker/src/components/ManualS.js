@@ -52,7 +52,7 @@ const ManualSup = () => {
             boxShadow: 4,
           }}>
             <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`}>
-              <Viewer fileUrl="/manualDD.pdf" plugins={[defaultLayoutPluginInstance]} />
+              <Viewer fileUrl="/MaIrcp.pdf" plugins={[defaultLayoutPluginInstance]} />
             </Worker>
           </Box>
         </Box>
