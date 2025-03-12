@@ -113,16 +113,16 @@ const DashboardPage2 = () => {
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'center', // จัดตำแหน่งแนวนอนให้ตรงกลาง
-                alignItems: 'center', // จัดตำแหน่งแนวตั้งให้ตรงกลาง
-                gap: 2, // ระยะห่างระหว่างรูปและข้อมูล
-                mb: 2, // ระยะห่างจากส่วนอื่น
+                justifyContent: 'center', 
+                alignItems: 'center', 
+                gap: 2, 
+                mb: 2, 
               }}
             >
               {/* รูปภาพ */}
               <Box
                 sx={{
-                  width: 150, // ขนาดของรูป
+                  width: 150, 
                   height: 150,
                   overflow: 'hidden',
                   borderRadius: '8px',

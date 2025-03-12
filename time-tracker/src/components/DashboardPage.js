@@ -318,7 +318,7 @@ const DashboardPage = () => {
             {/* ปุ่มออกงาน */}
             <Button
               variant="contained"
-              color="primary"
+              color="warning"
               fullWidth
               disabled={!isLogoutEnabled || isOutOfRange}
               onClick={handleLogout}
