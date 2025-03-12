@@ -10,9 +10,10 @@ const AdminLogin = () => {
 
   const handleLogin = () => {
     if (username === 'Admin' && password === 'Admin') {
-      navigate('/admin'); // เด้งไปที่หน้า Admin Dashboard
+      localStorage.setItem('isAdminLoggedIn', 'true'); // ✅ บันทึกการล็อกอิน
+      navigate('/admin'); // ✅ ไปที่หน้า Admin
     } else {
-      setError(true); //  แสดง Error ถ้ากรอกผิด
+      setError(true);
     }
   };
 
@@ -34,14 +35,8 @@ const AdminLogin = () => {
               Admin Login
             </Typography>
 
-            {/* แสดงข้อความแจ้งเตือนถ้า Login ไม่สำเร็จ */}
-            {error && (
-              <Alert severity="error" sx={{ mb: 2 }}>
-                ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง
-              </Alert>
-            )}
+            {error && <Alert severity="error" sx={{ mb: 2 }}>ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง</Alert>}
 
-            {/* ช่องกรอก Username */}
             <TextField
               label="Username"
               variant="outlined"
@@ -51,7 +46,6 @@ const AdminLogin = () => {
               onChange={(e) => setUsername(e.target.value)}
             />
 
-            {/* ช่องกรอก Password */}
             <TextField
               label="Password"
               variant="outlined"
@@ -62,7 +56,6 @@ const AdminLogin = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {/* ปุ่ม Login */}
             <Button
               variant="contained"
               color="primary"
