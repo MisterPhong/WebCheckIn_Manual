@@ -82,8 +82,9 @@ const DashboardPage1 = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        width: '100vw',
+        minHeight: "91vh",
+        width: "90w",
+        overflow: "hidden",
         background: 'linear-gradient(to bottom right, rgba(254, 255, 255, 0.81), rgb(136, 222, 251))',
         py: 4,
       }}
@@ -125,12 +126,12 @@ const DashboardPage1 = () => {
                 }}
               >
                 <img
-                  src="https://png.pngtree.com/png-vector/20220930/ourmid/pngtree-paid-sick-days-rgb-color-icon-vacation-benefit-plan-vector-png-image_39457746.png" 
+                  src="https://png.pngtree.com/png-vector/20220930/ourmid/pngtree-paid-sick-days-rgb-color-icon-vacation-benefit-plan-vector-png-image_39457746.png"
                   alt="User Profile"
                   style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'cover', 
+                    objectFit: 'cover',
                   }}
                 />
               </Box>
@@ -176,14 +177,11 @@ const DashboardPage1 = () => {
             <Typography variant="h6" gutterBottom>
               ประวัติการเข้า-ออกงาน
             </Typography>
-            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+            <TableContainer component={Paper} sx={{ height: 270 }}>
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
-                    <TableCell>ลำดับ</TableCell>
                     <TableCell>วันที่</TableCell>
-                    <TableCell>ชื่อ - สกุล</TableCell>
-                    <TableCell>ชื่อเล่น</TableCell>
                     <TableCell>สถานะ</TableCell>
                     <TableCell>เวลาเข้างาน</TableCell>
                     <TableCell>เวลาออกงาน</TableCell>
@@ -191,30 +189,29 @@ const DashboardPage1 = () => {
                 </TableHead>
                 <TableBody>
                   {filteredData.length > 0 ? (
-                    filteredData.map((user, index) => (
-                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{formatDate(user.loginTime)}</TableCell>
-                        <TableCell>{user.firstName} {user.lastName}</TableCell>
-                        <TableCell>{user.nickname}</TableCell>
-                        <TableCell>{user.status || '-'}</TableCell>
-                        <TableCell>
-                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                            : user.status === 'ลากิจ' ? 'ลากิจ'
-                              : formatDateTime(user.loginTime)}
-                        </TableCell>
-                        <TableCell>
-                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                            : user.status === 'ลากิจ' ? 'ลากิจ'
-                              : user.logoutTime
-                                ? formatDateTime(user.logoutTime)
-                                : 'ยังไม่ออกงาน'}
-                        </TableCell>
-                      </TableRow>
-                    ))
+                    [...filteredData]
+                      .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime)) // เรียงจากวันล่าสุดลงไป
+                      .map((user, index) => (
+                        <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
+                          <TableCell>{formatDate(user.loginTime)}</TableCell>
+                          <TableCell>{user.status || '-'}</TableCell>
+                          <TableCell>
+                            {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                              : user.status === 'ลากิจ' ? 'ลากิจ'
+                                : formatDateTime(user.loginTime)}
+                          </TableCell>
+                          <TableCell>
+                            {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                              : user.status === 'ลากิจ' ? 'ลากิจ'
+                                : user.logoutTime
+                                  ? formatDateTime(user.logoutTime)
+                                  : 'ยังไม่ออกงาน'}
+                          </TableCell>
+                        </TableRow>
+                      ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
+                      <TableCell colSpan={7} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
                     </TableRow>
                   )}
                 </TableBody>

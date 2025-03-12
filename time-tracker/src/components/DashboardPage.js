@@ -14,6 +14,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  CssBaseline, GlobalStyles
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
@@ -230,10 +231,14 @@ const DashboardPage = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        width: '100vw',
-        // พื้นหลังไล่สี
-        background: 'linear-gradient(to bottom right,rgba(254, 255, 255, 0.81),rgb(136, 222, 251))',
+        minHeight: "91vh",
+        width: "90w",
+        overflow: "hidden",
+        background: "linear-gradient(to bottom right, rgba(254, 255, 255, 0.81), rgb(136, 222, 251))",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
         py: 4,
       }}
     >
@@ -245,7 +250,7 @@ const DashboardPage = () => {
           style={{ width: 150, height: 150, objectFit: 'contain' }}
         />
       </Box>
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ maxWidth: '100%', overflow: 'hidden' }}>
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         <Card sx={{ mb: 4, boxShadow: 4 }}>
@@ -336,19 +341,15 @@ const DashboardPage = () => {
 
         {/* Card สอง: ตารางข้อมูลผู้ใช้ */}
         <Card sx={{ boxShadow: 4 }}>
-          {/* ส่วนตารางแสดงรายชื่อผู้ใช้ */}
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              ประวัติการเข้า-ออกงาน
+              ประวัติการเข้า-ออกงานย้อนหลัง
             </Typography>
-            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+            <TableContainer component={Paper} sx={{ height: 270 }}>
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
-                    <TableCell>ลำดับ</TableCell>
                     <TableCell>วันที่</TableCell>
-                    <TableCell>ชื่อ - สกุล</TableCell>
-                    <TableCell>ชื่อเล่น</TableCell>
                     <TableCell>สถานะ</TableCell>
                     <TableCell>เวลาเข้างาน</TableCell>
                     <TableCell>เวลาออกงาน</TableCell>
@@ -356,32 +357,29 @@ const DashboardPage = () => {
                 </TableHead>
                 <TableBody>
                   {filteredData.length > 0 ? (
-                    filteredData.map((user, index) => (
-                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{formatDate(user.loginTime)}</TableCell>
-                        <TableCell>{user.firstName} {user.lastName}</TableCell>
-                        <TableCell>{user.nickname}</TableCell>
-                        <TableCell>{user.status || '-'}</TableCell>
-
-                        {/* ถ้าสถานะเป็น 'ลาป่วย' หรือ 'ลากิจ' ให้แสดงตามประเภทการลา */}
-                        <TableCell>
-                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                            : user.status === 'ลากิจ' ? 'ลากิจ'
-                              : formatTimes(user.loginTime)}
-                        </TableCell>
-                        <TableCell>
-                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                            : user.status === 'ลากิจ' ? 'ลากิจ'
-                              : user.logoutTime
-                                ? formatTimes(user.logoutTime)
-                                : 'ยังไม่ออกงาน'}
-                        </TableCell>
-                      </TableRow>
-                    ))
+                    [...filteredData]
+                      .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime)) // เรียงจากวันล่าสุดลงไป
+                      .map((user, index) => (
+                        <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
+                          <TableCell>{formatDate(user.loginTime)}</TableCell>
+                          <TableCell>{user.status || '-'}</TableCell>
+                          <TableCell>
+                            {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                              : user.status === 'ลากิจ' ? 'ลากิจ'
+                                : formatTimes(user.loginTime)}
+                          </TableCell>
+                          <TableCell>
+                            {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                              : user.status === 'ลากิจ' ? 'ลากิจ'
+                                : user.logoutTime
+                                  ? formatTimes(user.logoutTime)
+                                  : 'ยังไม่ออกงาน'}
+                          </TableCell>
+                        </TableRow>
+                      ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
+                      <TableCell colSpan={7} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
