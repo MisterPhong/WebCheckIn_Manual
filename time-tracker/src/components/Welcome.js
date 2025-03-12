@@ -38,7 +38,6 @@ const Welcome = () => {
           style={{ width: 200, height: 200, objectFit: 'contain' }}
         />
       </Box>
-
       <Container maxWidth="sm">
         <Card sx={{ boxShadow: 5, borderRadius: 2 }}>
           <CardContent>
