@@ -116,7 +116,7 @@ const filteredData = sortedData.filter(user => {
         <Card sx={{ mb: 4, boxShadow: 4 }}>
           <CardContent>
             <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
-              หน้า GM
+              Admin
             </Typography>
 
             {/* Box สำหรับการจัดตำแหน่งข้อมูลและรูปภาพ */}
@@ -171,7 +171,7 @@ const filteredData = sortedData.filter(user => {
         <Card sx={{ boxShadow: 4 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
-              ประวัติการเข้า-ออกงาน ของทุกคน
+              ประวัติการเข้า-ออกงาน (นักศึกษาฝึกงาน)
             </Typography>
 
            
