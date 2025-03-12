@@ -11,37 +11,19 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  Card,
+  CardContent,
+  CardActions
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const DashboardPage2 = () => {
   const navigate = useNavigate();
-
-  // ดึงข้อมูลจาก localStorage (ของผู้ใช้ที่ล็อกอิน)
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
-  const { firstName, nickname, loginTime, status } = storedUser;
-
-  // State สำหรับเก็บข้อมูลจาก MongoDB
+  const { firstName, nickname, loginTime,
+    status } = storedUser;
   const [userData, setUserData] = useState([]);
 
-  // ฟังก์ชันสำหรับแปลงวันที่
-  const formatUserDate = (dateString) => {
-    const dateObj = new Date(dateString);
-    return dateObj.toLocaleDateString('th-TH'); // ปรับรูปแบบให้เหมาะกับภาษาไทย
-  };
-
-  // ฟังก์ชันสำหรับแปลงเวลา
-  const formatTimes = (timeString) => {
-    const dateObj = new Date(timeString);
-    return dateObj.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    });
-  };
-
-  // ฟังก์ชันแปลงเวลาเป็น HH:mm:ss
   const formatDateTime = (timeString) => {
     if (!timeString) return 'ยังไม่ออกงาน';
     const dateObj = new Date(timeString);
@@ -53,16 +35,40 @@ const DashboardPage2 = () => {
     });
   };
 
+  
+
+  const formatDate = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    const buddhistYear = dateObj.getFullYear() + 543;
+    return dateObj.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
+  };
+
+  const formatTimes = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    return dateObj.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
+  };
+
+
   useEffect(() => {
     if (!firstName || !nickname) {
-      navigate('/'); // ถ้าไม่มีข้อมูลใน localStorage ให้กลับหน้าแรก
+      navigate('/');
       return;
     }
 
-    // ดึงข้อมูลจาก MongoDB ผ่าน API
     const fetchUserData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/user/getUserData'); // เรียก API จาก Backend
+        const response = await fetch('http://localhost:5000/api/user/getUserData');
         const data = await response.json();
         setUserData(data);
       } catch (error) {
@@ -70,25 +76,8 @@ const DashboardPage2 = () => {
       }
     };
     fetchUserData();
-
-    // ตั้งเวลาให้ออกจากระบบตอนเที่ยงคืน
-    const now = new Date();
-    const midnight = new Date(now);
-    midnight.setHours(17, 0, 0, 0); // ตั้งเวลาเป็น 00:00:00 ของวันถัดไป
-    const timeUntilMidnight = midnight - now; // คำนวณเวลาที่เหลือ
-
-    console.log(`ระบบจะออกจากระบบในอีก ${timeUntilMidnight / 1000} วินาที`);
-
-    const timeout = setTimeout(() => {
-      console.log("ถึงเวลาเที่ยงคืน ออกจากระบบ...");
-      localStorage.removeItem('userSession'); // ลบ session ออกจาก localStorage
-      navigate('/'); // กลับไปหน้า Welcome
-    }, timeUntilMidnight); // ออกจากระบบเมื่อถึงเที่ยงคืน
-
-    return () => clearTimeout(timeout); // เคลียร์ timeout เมื่อ component unmount
   }, [firstName, nickname, navigate]);
 
-  // กรองเฉพาะข้อมูลของตัวเองจาก MongoDB
   const filteredData = userData.filter(
     (user) => user.firstName === firstName && user.nickname === nickname
   );
@@ -191,6 +180,7 @@ const DashboardPage2 = () => {
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
+                    <TableCell>วันที่</TableCell>
                     <TableCell>ชื่อ - สกุล</TableCell>
                     <TableCell>ชื่อเล่น</TableCell>
                     <TableCell>สถานะ</TableCell>
@@ -203,6 +193,7 @@ const DashboardPage2 = () => {
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
                         <TableCell>{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>
                         <TableCell>{user.status || '-'}</TableCell>
