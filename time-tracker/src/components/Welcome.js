@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, Container, CardActions } from '@mui/material';
+import { Box, Typography, Card, CardContent, Container, CardActions, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 const Welcome = () => {
@@ -13,6 +13,10 @@ const Welcome = () => {
     navigate('/menu');
   };
 
+  const handleAdminLogin = () => {
+    navigate('/adminlogin'); //
+  };
+
   return (
     <Box
       sx={{
@@ -22,10 +26,10 @@ const Welcome = () => {
         alignItems: 'center',
         justifyContent: 'center',
         background: 'linear-gradient(to bottom right,rgba(254, 255, 255, 0.81),rgb(136, 222, 251))',
-        position: 'relative', // เพิ่ม position relative
+        position: 'relative',
       }}
-    >  
-    {/* Logoบริษัท */}
+    >
+      {/* Logoบริษัท */}
       <Box
         sx={{
           position: 'absolute',
@@ -33,7 +37,7 @@ const Welcome = () => {
         }}
       >
         <img
-          src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png" // ใช้ URL ที่ถูกต้อง
+          src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
           alt="IRCP Logo"
           style={{ width: 200, height: 200, objectFit: 'contain' }}
         />
@@ -52,7 +56,7 @@ const Welcome = () => {
             </Typography>
 
             {/* 2 บล็อก */}
-            <Box sx={{ display: 'flex', gap: 4, justifyContent: 'center' }}>
+            <Box sx={{ display: 'flex', gap: 4, justifyContent: 'center', mb: 3 }}>
               {/* เข้างาน */}
               <Box
                 sx={{
@@ -67,7 +71,8 @@ const Welcome = () => {
                   borderRadius: 2,
                   cursor: 'pointer',
                   boxShadow: 3,
-                  transition:'transform 0.3s ease,box-shadow 0.3s ease','&:hover': {
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
                     transform: 'translateY(-10px)',
                     boxShadow: 10,
                   },
@@ -102,7 +107,8 @@ const Welcome = () => {
                   borderRadius: 2,
                   cursor: 'pointer',
                   boxShadow: 3,
-                  transition:'transform 0.3s ease,box-shadow 0.3s ease','&:hover': {
+                  transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+                  '&:hover': {
                     transform: 'translateY(-10px)',
                     boxShadow: 10,
                   },
@@ -123,9 +129,31 @@ const Welcome = () => {
                 </Typography>
               </Box>
             </Box>
+
+            {/* ปุ่มสำหรับ Admin */}
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={handleAdminLogin}
+                sx={{
+                  fontSize: '16px',
+                  fontWeight: 'bold',
+                  padding: '10px 20px',
+                  borderRadius: 2,
+                  boxShadow: 3,
+                  transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  '&:hover': {
+                    transform: 'scale(1.05)',
+                    boxShadow: 6,
+                  },
+                }}
+              >
+                สำหรับ ADMIN
+              </Button>
+            </Box>
+
           </CardContent>
-          <CardActions sx={{ justifyContent: 'center', mb: 1 }}>
-          </CardActions>
         </Card>
       </Container>
     </Box>

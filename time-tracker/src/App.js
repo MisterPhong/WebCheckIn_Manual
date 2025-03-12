@@ -8,6 +8,8 @@ import Welcome from './components/Welcome';
 import ChnageManu from './components/ChnageManu';
 import Manual from './components/Manual';
 import ManualSup from './components/ManualS';
+import Admin from './components/Admin';
+import AdminLogin from './components/AdminLogin';
 
 const App = () => {
   return (
@@ -20,6 +22,8 @@ const App = () => {
         <Route path="/manuals" element={<Manual />} />
         <Route path="/menu" element={<ChnageManu />} />
         <Route path="/menus" element={<ManualSup />} />
+        <Route path="/admin" element={<Admin />} />
+        <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/" element={<Welcome />} />
       </Routes>
     </Router>
