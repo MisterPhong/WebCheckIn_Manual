@@ -26,8 +26,16 @@ const Admin = () => {
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
   const { firstName, nickname, loginTime, status } = storedUser;
   const [userData, setUserData] = useState([]);
-  const [sortOption, setSortOption] = useState('date_desc'); 
+  const [sortOption, setSortOption] = useState('date_desc');
   const [searchTerm, setSearchTerm] = useState(''); // คำที่ใช้ค้นหา
+
+  useEffect(() => {
+    const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn');
+    if (!isAdminLoggedIn) {
+      navigate('/'); // 
+    }
+  }, [navigate]);
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -40,7 +48,7 @@ const Admin = () => {
       }
     };
     fetchUserData();
-  }, []); 
+  }, []);
 
   const formatDate = (timeString) => {
     if (!timeString) return '-';
@@ -52,6 +60,12 @@ const Admin = () => {
       day: '2-digit',
     }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
   };
+
+  const handleLogout = () => {
+    localStorage.removeItem('isAdminLoggedIn'); // ลบข้อมูลการล็อกอิน
+    navigate('/AdminLogin'); // กลับไปหน้า Login
+  };
+
 
   const formatTimes = (timeString) => {
     if (!timeString) return '-';
@@ -72,25 +86,25 @@ const Admin = () => {
     return 0;
   });
 
-  
-// ตรวจสอบ userData และ searchTerm ก่อนกรองข้อมูล
-const filteredData = sortedData.filter(user => {
-  if (!user) return false; // ถ้าข้อมูลเป็น null หรือ undefined ไม่ต้องแสดง
 
-  const firstName = user.firstName ? user.firstName.toLowerCase() : "";
-  const lastName = user.lastName ? user.lastName.toLowerCase() : "";
-  const nickname = user.nickname ? user.nickname.toLowerCase() : "";
-  const formattedDate = user.loginTime ? formatDate(user.loginTime) : ""; //  แปลงวันที่ให้ตรงกับ UI
+  // ตรวจสอบ userData และ searchTerm ก่อนกรองข้อมูล
+  const filteredData = sortedData.filter(user => {
+    if (!user) return false; // ถ้าข้อมูลเป็น null หรือ undefined ไม่ต้องแสดง
 
-  const search = searchTerm ? searchTerm.toLowerCase() : ""; //  แปลง searchTerm เป็น lowerCase
+    const firstName = user.firstName ? user.firstName.toLowerCase() : "";
+    const lastName = user.lastName ? user.lastName.toLowerCase() : "";
+    const nickname = user.nickname ? user.nickname.toLowerCase() : "";
+    const formattedDate = user.loginTime ? formatDate(user.loginTime) : ""; //  แปลงวันที่ให้ตรงกับ UI
 
-  return (
-    firstName.includes(search) ||
-    lastName.includes(search) ||
-    nickname.includes(search) ||
-    formattedDate.includes(search) //  ค้นหาในวันที่
-  );
-});
+    const search = searchTerm ? searchTerm.toLowerCase() : ""; //  แปลง searchTerm เป็น lowerCase
+
+    return (
+      firstName.includes(search) ||
+      lastName.includes(search) ||
+      nickname.includes(search) ||
+      formattedDate.includes(search) //  ค้นหาในวันที่
+    );
+  });
 
   return (
     <Box
@@ -163,7 +177,9 @@ const filteredData = sortedData.filter(user => {
             </Box>
           </CardContent>
           <CardActions sx={{ justifyContent: 'center' }}>
-            <Button variant="contained" onClick={() => navigate('/')}>กลับไปหน้าแรก</Button>
+            <Button variant="contained" color="error" onClick={handleLogout}>
+              ออกจากระบบ
+            </Button>
           </CardActions>
         </Card>
 
@@ -174,7 +190,7 @@ const filteredData = sortedData.filter(user => {
               ประวัติการเข้า-ออกงาน (นักศึกษาฝึกงาน)
             </Typography>
 
-           
+
             <TextField
               label="ค้นหาโดย ชื่อ - สกุล ชื่อเล่น หรือ วันที่"
               variant="outlined"
