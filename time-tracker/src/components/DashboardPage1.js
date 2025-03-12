@@ -24,9 +24,14 @@ const DashboardPage1 = () => {
   // State สำหรับเก็บข้อมูลจาก MongoDB
   const [userData, setUserData] = useState([]);
 
-  // ฟังก์ชันแปลงเวลาเป็น HH:mm:ss
-  const formatDateTime = (timeString) => {
-    if (!timeString) return 'ยังไม่ออกงาน';
+  // ฟังก์ชันสำหรับแปลงวันที่
+  const formatUserDate = (dateString) => {
+    const dateObj = new Date(dateString);
+    return dateObj.toLocaleDateString('th-TH'); // ปรับรูปแบบให้เหมาะกับภาษาไทย
+  };
+
+  // ฟังก์ชันสำหรับแปลงเวลา
+  const formatTimes = (timeString) => {
     const dateObj = new Date(timeString);
     return dateObj.toLocaleTimeString([], {
       hour: '2-digit',
@@ -36,19 +41,9 @@ const DashboardPage1 = () => {
     });
   };
 
-  const formatDate = (timeString) => {
-    if (!timeString) return '-';
-    const dateObj = new Date(timeString);
-    const buddhistYear = dateObj.getFullYear() + 543;
-    return dateObj.toLocaleDateString('th-TH', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
-  };
-
-  const formatTimes = (timeString) => {
-    if (!timeString) return '-';
+  // ฟังก์ชันแปลงเวลาเป็น HH:mm:ss
+  const formatDateTime = (timeString) => {
+    if (!timeString) return 'ยังไม่ออกงาน';
     const dateObj = new Date(timeString);
     return dateObj.toLocaleTimeString([], {
       hour: '2-digit',
@@ -76,10 +71,10 @@ const DashboardPage1 = () => {
     };
     fetchUserData();
 
-    // ตั้งเวลาให้ออกจากระบบ
+    // ตั้งเวลาให้ออกจากระบบตอนเที่ยงคืน
     const now = new Date();
     const midnight = new Date(now);
-    midnight.setHours(17, 0, 0, 0); // ตั้งเวลาลบเซสซั่นออกตอน ห้าโมงแลง
+    midnight.setHours(17, 0, 0, 0); // ตั้งเวลาเป็น 00:00:00 ของวันถัดไป
     const timeUntilMidnight = midnight - now; // คำนวณเวลาที่เหลือ
 
     console.log(`ระบบจะออกจากระบบในอีก ${timeUntilMidnight / 1000} วินาที`);
@@ -158,7 +153,7 @@ const DashboardPage1 = () => {
                 filteredData.map((user, index) => (
                   <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
                     <TableCell>{index + 1}</TableCell>
-                    <TableCell>{formatDate(user.loginTime)}</TableCell>
+                    <TableCell>{formatUserDate(user.loginTime)}</TableCell>
                     <TableCell>{user.firstName} {user.lastName}</TableCell>
                     <TableCell>{user.nickname}</TableCell>
                     <TableCell>{user.status || '-'}</TableCell>

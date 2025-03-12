@@ -77,21 +77,19 @@ const DashboardPage = () => {
     }
   };
 
-
-  const formatDate = (timeString) => {
-    if (!timeString) return '-';
-    const dateObj = new Date(timeString);
-    const buddhistYear = dateObj.getFullYear() + 543;
+  const formatDate = (logintime) => {
+    if (!logintime) return '-'; // If no login time, return '-'
+    const dateObj = new Date(logintime);
+    const buddhistYear = dateObj.getFullYear() + 543; // Adjust to Buddhist year
     return dateObj.toLocaleDateString('th-TH', {
       year: 'numeric',
       month: '2-digit',
       day: '2-digit',
     }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
   };
-
-  const formatTimes = (timeString) => {
-    if (!timeString) return '-';
-    const dateObj = new Date(timeString);
+  const formatTimes = (logintime) => {
+    if (!logintime) return '-'; // If no login time, return '-'
+    const dateObj = new Date(logintime);
     return dateObj.toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
@@ -99,7 +97,6 @@ const DashboardPage = () => {
       hour12: false,
     });
   };
-
 
   // const formatDateTime = (timeString) => {
   //   if (!timeString) return 'ยังไม่ออกงาน';
@@ -249,7 +246,7 @@ const DashboardPage = () => {
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         <Card sx={{ mb: 4, boxShadow: 4 }}>
           <CardContent>
-            <Typography variant="h5" align="center" gutterBottom>
+            <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
               Welcome To Office
             </Typography>
 
@@ -308,6 +305,7 @@ const DashboardPage = () => {
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
+                  <TableCell>ลำดับ</TableCell>
                     <TableCell>วันที่</TableCell>
                     <TableCell>ชื่อ - สกุล</TableCell>
                     <TableCell>ชื่อเล่น</TableCell>
@@ -320,6 +318,7 @@ const DashboardPage = () => {
                   {filteredData.length > 0 ? (
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
+                        <TableCell>{index + 1}</TableCell>
                         <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>
