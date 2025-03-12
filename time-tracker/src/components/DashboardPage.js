@@ -77,19 +77,9 @@ const DashboardPage = () => {
     }
   };
 
-  const formatDate = (logintime) => {
-    if (!logintime) return '-'; // If no login time, return '-'
-    const dateObj = new Date(logintime);
-    const buddhistYear = dateObj.getFullYear() + 543; // Adjust to Buddhist year
-    return dateObj.toLocaleDateString('th-TH', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
-  };
-  const formatTimes = (logintime) => {
-    if (!logintime) return '-'; // If no login time, return '-'
-    const dateObj = new Date(logintime);
+  const formatDateTime = (timeString) => {
+    if (!timeString) return 'ยังไม่ออกงาน';
+    const dateObj = new Date(timeString);
     return dateObj.toLocaleTimeString([], {
       hour: '2-digit',
       minute: '2-digit',
@@ -98,34 +88,20 @@ const DashboardPage = () => {
     });
   };
 
-  // const formatDateTime = (timeString) => {
-  //   if (!timeString) return 'ยังไม่ออกงาน';
-  //   const dateObj = new Date(timeString);
-  //   return dateObj.toLocaleString([], {
-  //     year: 'numeric',
-  //     month: '2-digit',
-  //     day: '2-digit',
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //     second: '2-digit',
-  //     hour12: false,
-  //   });
-  // };
-
-  // // ฟังก์ชันแปลงเวลา (e.g. เข้างาน)
-  // const formatLoginTime = (timeString) => {
-  //   if (!timeString) return '';
-  //   const dateObj = new Date(timeString);
-  //   if (isNaN(dateObj.getTime())) {
-  //     return '';
-  //   }
-  //   return dateObj.toLocaleTimeString([], {
-  //     hour: '2-digit',
-  //     minute: '2-digit',
-  //     second: '2-digit',
-  //     hour12: false,
-  //   });
-  // };
+  // ฟังก์ชันแปลงเวลา (e.g. เข้างาน)
+  const formatLoginTime = (timeString) => {
+    if (!timeString) return '';
+    const dateObj = new Date(timeString);
+    if (isNaN(dateObj.getTime())) {
+      return '';
+    }
+    return dateObj.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
+  };
 
   // ฟังก์ชันแปลงเวลา (ms) => hh:mm:ss เหลือเวลา
   const formatTime = (ms) => {
@@ -223,13 +199,11 @@ const DashboardPage = () => {
     (user) => user.firstName === firstName && user.nickname === nickname
   );
 
-
   return (
     <Box
       sx={{
         minHeight: '100vh',
         width: '100vw',
-        // พื้นหลังไล่สี
         background: 'linear-gradient(to bottom right,rgba(254, 255, 255, 0.81),rgb(136, 222, 251))',
         py: 4,
       }}
@@ -252,38 +226,74 @@ const DashboardPage = () => {
 
             {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}
             {firstName && loginTime ? (
-              <>
-                <Typography>ชื่อ - สกุล: {firstName}</Typography>
-                <Typography>ชื่อเล่น: {nickname}</Typography>
-                {/* <Typography>เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
-                <Typography>
-                  เวลาออกงาน: {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
-                </Typography> */}
-                <Typography>วันที่ : {formatDate(loginTime)}</Typography>
-                <Typography>เวลา : {formatTimes(loginTime)}</Typography>
-                <Typography>เวลาออกงาน : {formatTimes(new Date(new Date(loginTime).getTime() + 9 * 3600000))}</Typography>
-                <Box sx={{ my: 2 }}>
-                  <Typography>เหลือเวลาอีก: {formatTime(remainingTime)} น.</Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center',justifyContent:'center'}}>
+                {/* รูปภาพ */}
+                <Box sx={{ mr: 3 }}>
+                  <img
+                    src="https://i.pinimg.com/736x/5d/b3/60/5db360def4d6a542f802d74cc94fe549.jpg" 
+                    alt="User"
+                    style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }}
+                  />
                 </Box>
 
-                {/* ปุ่มออกงาน */}
-                <Button
-                  variant="contained"
-                  color="primary"
-                  fullWidth
-                  disabled={!isLogoutEnabled || isOutOfRange}
-                  onClick={handleLogout}
-                >
-                  ออกงาน
-                </Button>
-                {isOutOfRange && (
-                  <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                    คุณอยู่นอกเขต 1 กิโลเมตร ไม่สามารถออกงานได้
+                {/* ข้อมูลผู้ใช้ */}
+                <Box>
+                  <Typography>
+                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อ - สกุล:</Typography>
+                    <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{firstName}</Typography>
                   </Typography>
-                )}
-              </>
+                  <Typography>
+                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อเล่น:</Typography>
+                    <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{nickname}</Typography>
+                  </Typography>
+                  <Typography>
+                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }} >
+                      เวลาเข้างาน:
+                    </Typography>
+                    <Typography component="span" sx={{ fontWeight: 'bold', color: 'green' }}>
+                      {formatLoginTime(loginTime)}
+                    </Typography>
+                  </Typography>
+
+                  <Typography>
+                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>
+                      เวลาออกงาน:
+                    </Typography>
+                    <Typography component="span" sx={{ fontWeight: 'bold', color: 'blue' }}>
+                      {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
+                    </Typography>
+                  </Typography>
+
+                  <Box sx={{ my: 2 }}>
+                    <Typography>
+                      <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>
+                        เหลือเวลาอีก:
+                      </Typography>
+                      <Typography component="span" sx={{ fontWeight: 'bold', color: 'red' }}>
+                        {formatTime(remainingTime)}
+                      </Typography>
+                    </Typography>
+                  </Box>
+                </Box>
+              </Box>
             ) : (
               <Typography variant="h6">No data available</Typography>
+            )}
+
+            {/* ปุ่มออกงาน */}
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              disabled={!isLogoutEnabled || isOutOfRange}
+              onClick={handleLogout}
+            >
+              ออกงาน
+            </Button>
+            {isOutOfRange && (
+              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+                คุณอยู่นอกเขต 1 กิโลเมตร ไม่สามารถออกงานได้
+              </Typography>
             )}
           </CardContent>
 
@@ -322,26 +332,16 @@ const DashboardPage = () => {
                         <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>
-                        <TableCell>{user.status || '-'}</TableCell>
-
-                        {/* ถ้าสถานะเป็น 'ลาป่วย' หรือ 'ลากิจ' ให้แสดงตามประเภทการลา */}
-                        <TableCell>
-                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                            : user.status === 'ลากิจ' ? 'ลากิจ'
-                              : formatTimes(user.loginTime)}
-                        </TableCell>
-                        <TableCell>
-                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                            : user.status === 'ลากิจ' ? 'ลากิจ'
-                              : user.logoutTime
-                                ? formatTimes(user.logoutTime)
-                                : 'ยังไม่ออกงาน'}
-                        </TableCell>
+                        <TableCell>{user.status}</TableCell>
+                        <TableCell>{formatDateTime(user.loginTime)}</TableCell>
+                        <TableCell>{formatDateTime(user.logoutTime)}</TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
+                      <TableCell colSpan={6} align="center">
+                        ไม่มีข้อมูล
+                      </TableCell>
                     </TableRow>
                   )}
                 </TableBody>
