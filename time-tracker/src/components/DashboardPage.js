@@ -22,7 +22,8 @@ const DashboardPage = () => {
 
   // อ่าน session จาก localStorage
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
-  const { firstName, nickname, loginTime} = storedUser;
+  // const { firstName, nickname, loginTime } = storedUser;
+  const { firstName, nickname, loginTime } = storedUser;
 
   // สเตตสำหรับข้อมูลผู้ใช้ทั้งหมด (ที่โหลดจาก API)
   const [userData, setUserData] = useState([]);
@@ -77,8 +78,19 @@ const DashboardPage = () => {
   };
 
 
-  const formatDateTime = (timeString) => {
-    if (!timeString) return 'ยังไม่ออกงาน';
+  const formatDate = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    const buddhistYear = dateObj.getFullYear() + 543;
+    return dateObj.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
+  };
+
+  const formatTimes = (timeString) => {
+    if (!timeString) return '-';
     const dateObj = new Date(timeString);
     return dateObj.toLocaleTimeString([], {
       hour: '2-digit',
@@ -88,20 +100,35 @@ const DashboardPage = () => {
     });
   };
 
-  // ฟังก์ชันแปลงเวลา (e.g. เข้างาน)
-  const formatLoginTime = (timeString) => {
-    if (!timeString) return '';
-    const dateObj = new Date(timeString);
-    if (isNaN(dateObj.getTime())) {
-      return '';
-    }
-    return dateObj.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    });
-  };
+
+  // const formatDateTime = (timeString) => {
+  //   if (!timeString) return 'ยังไม่ออกงาน';
+  //   const dateObj = new Date(timeString);
+  //   return dateObj.toLocaleString([], {
+  //     year: 'numeric',
+  //     month: '2-digit',
+  //     day: '2-digit',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     second: '2-digit',
+  //     hour12: false,
+  //   });
+  // };
+
+  // // ฟังก์ชันแปลงเวลา (e.g. เข้างาน)
+  // const formatLoginTime = (timeString) => {
+  //   if (!timeString) return '';
+  //   const dateObj = new Date(timeString);
+  //   if (isNaN(dateObj.getTime())) {
+  //     return '';
+  //   }
+  //   return dateObj.toLocaleTimeString([], {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     second: '2-digit',
+  //     hour12: false,
+  //   });
+  // };
 
   // ฟังก์ชันแปลงเวลา (ms) => hh:mm:ss เหลือเวลา
   const formatTime = (ms) => {
@@ -167,7 +194,7 @@ const DashboardPage = () => {
     // คำนวณเวลาที่เหลือ
     const loginDate = new Date(loginTime);
     const now = new Date();
-    const timeDifference = 9 * 3600000 - (now - loginDate);
+    const timeDifference = 0 * 3600000 - (now - loginDate);
 
     if (timeDifference > 0) {
       setRemainingTime(timeDifference);
@@ -211,13 +238,13 @@ const DashboardPage = () => {
       }}
     >
       {/* Logoบริษัท */}
-            <Box sx={{ position: 'absolute', top: -30, right: 50 }}>
-              <img
-                src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
-                alt="IRCP Logo"
-                style={{ width: 150, height: 150, objectFit: 'contain' }}
-              />
-            </Box>
+      <Box sx={{ position: 'absolute', top: -30, right: 50 }}>
+        <img
+          src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
+          alt="IRCP Logo"
+          style={{ width: 150, height: 150, objectFit: 'contain' }}
+        />
+      </Box>
       <Container maxWidth="md">
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         <Card sx={{ mb: 4, boxShadow: 4 }}>
@@ -231,12 +258,15 @@ const DashboardPage = () => {
               <>
                 <Typography>ชื่อ - สกุล: {firstName}</Typography>
                 <Typography>ชื่อเล่น: {nickname}</Typography>
-                <Typography>เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
+                {/* <Typography>เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
                 <Typography>
                   เวลาออกงาน: {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
-                </Typography>
+                </Typography> */}
+                <Typography>วันที่ : {formatDate(loginTime)}</Typography>
+                <Typography>เวลา : {formatTimes(loginTime)}</Typography>
+                <Typography>เวลาออกงาน : {formatTimes(new Date(new Date(loginTime).getTime() + 9 * 3600000))}</Typography>
                 <Box sx={{ my: 2 }}>
-                  <Typography>เหลือเวลาอีก: {formatTime(remainingTime)}</Typography>
+                  <Typography>เหลือเวลาอีก: {formatTime(remainingTime)} น.</Typography>
                 </Box>
 
                 {/* ปุ่มออกงาน */}
@@ -278,7 +308,7 @@ const DashboardPage = () => {
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
-                    <TableCell>ลำดับ</TableCell>
+                    <TableCell>วันที่</TableCell>
                     <TableCell>ชื่อ - สกุล</TableCell>
                     <TableCell>ชื่อเล่น</TableCell>
                     <TableCell>สถานะ</TableCell>
@@ -290,7 +320,7 @@ const DashboardPage = () => {
                   {filteredData.length > 0 ? (
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
-                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>
                         <TableCell>{user.status || '-'}</TableCell>
@@ -299,13 +329,13 @@ const DashboardPage = () => {
                         <TableCell>
                           {user.status === 'ลาป่วย' ? 'ลาป่วย'
                             : user.status === 'ลากิจ' ? 'ลากิจ'
-                              : formatDateTime(user.loginTime)}
+                              : formatTimes(user.loginTime)}
                         </TableCell>
                         <TableCell>
                           {user.status === 'ลาป่วย' ? 'ลาป่วย'
                             : user.status === 'ลากิจ' ? 'ลากิจ'
                               : user.logoutTime
-                                ? formatDateTime(user.logoutTime)
+                                ? formatTimes(user.logoutTime)
                                 : 'ยังไม่ออกงาน'}
                         </TableCell>
                       </TableRow>

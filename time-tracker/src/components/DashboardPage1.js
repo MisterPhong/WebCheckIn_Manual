@@ -36,6 +36,28 @@ const DashboardPage1 = () => {
     });
   };
 
+  const formatDate = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    const buddhistYear = dateObj.getFullYear() + 543;
+    return dateObj.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
+  };
+
+  const formatTimes = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    return dateObj.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
+  };
+
   useEffect(() => {
     if (!firstName || !nickname) {
       navigate('/'); // ถ้าไม่มีข้อมูลใน localStorage ให้กลับหน้าแรก
@@ -54,10 +76,10 @@ const DashboardPage1 = () => {
     };
     fetchUserData();
 
-    // ตั้งเวลาให้ออกจากระบบตอนเที่ยงคืน
+    // ตั้งเวลาให้ออกจากระบบ
     const now = new Date();
     const midnight = new Date(now);
-    midnight.setHours(24, 0, 0, 0); // ตั้งเวลาเป็น 00:00:00 ของวันถัดไป
+    midnight.setHours(17, 0, 0, 0); // ตั้งเวลาลบเซสซั่นออกตอน ห้าโมงแลง
     const timeUntilMidnight = midnight - now; // คำนวณเวลาที่เหลือ
 
     console.log(`ระบบจะออกจากระบบในอีก ${timeUntilMidnight / 1000} วินาที`);
@@ -121,8 +143,9 @@ const DashboardPage1 = () => {
         <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
           <Table size="small" stickyHeader>
             <TableHead>
-              <TableRow sx={{ '& th': { backgroundColor: '#f0f0f0', fontWeight: 'bold' } }}>
+              <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                 <TableCell>ลำดับ</TableCell>
+                <TableCell>วันที่</TableCell>
                 <TableCell>ชื่อ - สกุล</TableCell>
                 <TableCell>ชื่อเล่น</TableCell>
                 <TableCell>สถานะ</TableCell>
@@ -133,8 +156,9 @@ const DashboardPage1 = () => {
             <TableBody>
               {filteredData.length > 0 ? (
                 filteredData.map((user, index) => (
-                  <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: '#fafafa' } }}>
+                  <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
                     <TableCell>{index + 1}</TableCell>
+                    <TableCell>{formatDate(user.loginTime)}</TableCell>
                     <TableCell>{user.firstName} {user.lastName}</TableCell>
                     <TableCell>{user.nickname}</TableCell>
                     <TableCell>{user.status || '-'}</TableCell>
@@ -143,13 +167,13 @@ const DashboardPage1 = () => {
                     <TableCell>
                       {user.status === 'ลาป่วย' ? 'ลาป่วย'
                         : user.status === 'ลากิจ' ? 'ลากิจ'
-                          : formatDateTime(user.loginTime)}
+                          : formatTimes(user.loginTime)}
                     </TableCell>
                     <TableCell>
                       {user.status === 'ลาป่วย' ? 'ลาป่วย'
                         : user.status === 'ลากิจ' ? 'ลากิจ'
                           : user.logoutTime
-                            ? formatDateTime(user.logoutTime)
+                            ? formatTimes(user.logoutTime)
                             : 'ยังไม่ออกงาน'}
                     </TableCell>
                   </TableRow>
