@@ -34,6 +34,29 @@ const DashboardPage1 = () => {
     });
   };
 
+  const formatDate = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    const buddhistYear = dateObj.getFullYear() + 543;
+    return dateObj.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
+  };
+
+  const formatTimes = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    return dateObj.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
+  };
+
+
   useEffect(() => {
     if (!firstName || !nickname) {
       navigate('/');
@@ -158,6 +181,7 @@ const DashboardPage1 = () => {
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
+                    <TableCell>วันที่</TableCell>
                     <TableCell>ชื่อ - สกุล</TableCell>
                     <TableCell>ชื่อเล่น</TableCell>
                     <TableCell>สถานะ</TableCell>
@@ -170,6 +194,7 @@ const DashboardPage1 = () => {
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
                         <TableCell>{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>
                         <TableCell>{user.status || '-'}</TableCell>

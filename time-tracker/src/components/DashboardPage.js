@@ -22,6 +22,7 @@ const DashboardPage = () => {
 
   // อ่าน session จาก localStorage
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
+  // const { firstName, nickname, loginTime } = storedUser;
   const { firstName, nickname, loginTime } = storedUser;
 
   // สเตตสำหรับข้อมูลผู้ใช้ทั้งหมด (ที่โหลดจาก API)
@@ -76,8 +77,20 @@ const DashboardPage = () => {
     }
   };
 
-  const formatDateTime = (timeString) => {
-    if (!timeString) return 'ยังไม่ออกงาน';
+
+  const formatDate = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    const buddhistYear = dateObj.getFullYear() + 543;
+    return dateObj.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
+  };
+
+  const formatTimes = (timeString) => {
+    if (!timeString) return '-';
     const dateObj = new Date(timeString);
     return dateObj.toLocaleTimeString([], {
       hour: '2-digit',
@@ -87,20 +100,35 @@ const DashboardPage = () => {
     });
   };
 
-  // ฟังก์ชันแปลงเวลา (e.g. เข้างาน)
-  const formatLoginTime = (timeString) => {
-    if (!timeString) return '';
-    const dateObj = new Date(timeString);
-    if (isNaN(dateObj.getTime())) {
-      return '';
-    }
-    return dateObj.toLocaleTimeString([], {
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    });
-  };
+
+  // const formatDateTime = (timeString) => {
+  //   if (!timeString) return 'ยังไม่ออกงาน';
+  //   const dateObj = new Date(timeString);
+  //   return dateObj.toLocaleString([], {
+  //     year: 'numeric',
+  //     month: '2-digit',
+  //     day: '2-digit',
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     second: '2-digit',
+  //     hour12: false,
+  //   });
+  // };
+
+  // // ฟังก์ชันแปลงเวลา (e.g. เข้างาน)
+  // const formatLoginTime = (timeString) => {
+  //   if (!timeString) return '';
+  //   const dateObj = new Date(timeString);
+  //   if (isNaN(dateObj.getTime())) {
+  //     return '';
+  //   }
+  //   return dateObj.toLocaleTimeString([], {
+  //     hour: '2-digit',
+  //     minute: '2-digit',
+  //     second: '2-digit',
+  //     hour12: false,
+  //   });
+  // };
 
   // ฟังก์ชันแปลงเวลา (ms) => hh:mm:ss เหลือเวลา
   const formatTime = (ms) => {
@@ -166,7 +194,7 @@ const DashboardPage = () => {
     // คำนวณเวลาที่เหลือ
     const loginDate = new Date(loginTime);
     const now = new Date();
-    const timeDifference = 9 * 3600000 - (now - loginDate);
+    const timeDifference = 0 * 3600000 - (now - loginDate);
 
     if (timeDifference > 0) {
       setRemainingTime(timeDifference);
@@ -198,11 +226,13 @@ const DashboardPage = () => {
     (user) => user.firstName === firstName && user.nickname === nickname
   );
 
+
   return (
     <Box
       sx={{
         minHeight: '100vh',
         width: '100vw',
+        // พื้นหลังไล่สี
         background: 'linear-gradient(to bottom right,rgba(254, 255, 255, 0.81),rgb(136, 222, 251))',
         py: 4,
       }}
@@ -217,6 +247,7 @@ const DashboardPage = () => {
       </Box>
       <Container maxWidth="md">
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
+        {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         <Card sx={{ mb: 4, boxShadow: 4 }}>
           <CardContent>
             <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
@@ -225,11 +256,11 @@ const DashboardPage = () => {
 
             {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}
             {firstName && loginTime ? (
-              <Box sx={{ display: 'flex', alignItems: 'center',justifyContent:'center'}}>
+              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 {/* รูปภาพ */}
                 <Box sx={{ mr: 3 }}>
                   <img
-                    src="https://i.pinimg.com/736x/5d/b3/60/5db360def4d6a542f802d74cc94fe549.jpg" 
+                    src="https://i.pinimg.com/736x/5d/b3/60/5db360def4d6a542f802d74cc94fe549.jpg"
                     alt="User"
                     style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }}
                   />
@@ -250,7 +281,7 @@ const DashboardPage = () => {
                       เวลาเข้างาน:
                     </Typography>
                     <Typography component="span" sx={{ fontWeight: 'bold', color: 'green' }}>
-                      {formatLoginTime(loginTime)}
+                      {formatTimes(loginTime)}
                     </Typography>
                   </Typography>
 
@@ -259,7 +290,7 @@ const DashboardPage = () => {
                       เวลาออกงาน:
                     </Typography>
                     <Typography component="span" sx={{ fontWeight: 'bold', color: 'blue' }}>
-                      {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
+                      {formatTimes(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
                     </Typography>
                   </Typography>
 
@@ -315,6 +346,7 @@ const DashboardPage = () => {
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
+                    <TableCell>วันที่</TableCell>
                     <TableCell>ชื่อ - สกุล</TableCell>
                     <TableCell>ชื่อเล่น</TableCell>
                     <TableCell>สถานะ</TableCell>
@@ -327,18 +359,29 @@ const DashboardPage = () => {
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
                         <TableCell>{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>
-                        <TableCell>{user.status}</TableCell>
-                        <TableCell>{formatDateTime(user.loginTime)}</TableCell>
-                        <TableCell>{formatDateTime(user.logoutTime)}</TableCell>
+                        <TableCell>{user.status || '-'}</TableCell>
+
+                        {/* ถ้าสถานะเป็น 'ลาป่วย' หรือ 'ลากิจ' ให้แสดงตามประเภทการลา */}
+                        <TableCell>
+                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                            : user.status === 'ลากิจ' ? 'ลากิจ'
+                              : formatTimes(user.loginTime)}
+                        </TableCell>
+                        <TableCell>
+                          {user.status === 'ลาป่วย' ? 'ลาป่วย'
+                            : user.status === 'ลากิจ' ? 'ลากิจ'
+                              : user.logoutTime
+                                ? formatTimes(user.logoutTime)
+                                : 'ยังไม่ออกงาน'}
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={6} align="center">
-                        ไม่มีข้อมูล
-                      </TableCell>
+                      <TableCell colSpan={6} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
                     </TableRow>
                   )}
                 </TableBody>

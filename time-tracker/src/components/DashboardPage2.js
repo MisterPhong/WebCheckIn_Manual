@@ -20,7 +20,8 @@ import { useNavigate } from 'react-router-dom';
 const DashboardPage2 = () => {
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
-  const { firstName, nickname, loginTime, status } = storedUser;
+  const { firstName, nickname, loginTime,
+    status } = storedUser;
   const [userData, setUserData] = useState([]);
 
   const formatDateTime = (timeString) => {
@@ -33,6 +34,31 @@ const DashboardPage2 = () => {
       hour12: false,
     });
   };
+
+  
+
+  const formatDate = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    const buddhistYear = dateObj.getFullYear() + 543;
+    return dateObj.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
+  };
+
+  const formatTimes = (timeString) => {
+    if (!timeString) return '-';
+    const dateObj = new Date(timeString);
+    return dateObj.toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
+  };
+
 
   useEffect(() => {
     if (!firstName || !nickname) {
@@ -154,6 +180,7 @@ const DashboardPage2 = () => {
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
+                    <TableCell>วันที่</TableCell>
                     <TableCell>ชื่อ - สกุล</TableCell>
                     <TableCell>ชื่อเล่น</TableCell>
                     <TableCell>สถานะ</TableCell>
@@ -166,6 +193,7 @@ const DashboardPage2 = () => {
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
                         <TableCell>{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell>{user.firstName} {user.lastName}</TableCell>
                         <TableCell>{user.nickname}</TableCell>
                         <TableCell>{user.status || '-'}</TableCell>
