@@ -22,7 +22,7 @@ const DashboardPage = () => {
 
   // อ่าน session จาก localStorage
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
-  const { firstName, nickname, loginTime} = storedUser;
+  const { firstName, nickname, loginTime } = storedUser;
 
   // สเตตสำหรับข้อมูลผู้ใช้ทั้งหมด (ที่โหลดจาก API)
   const [userData, setUserData] = useState([]);
@@ -211,33 +211,69 @@ const DashboardPage = () => {
       }}
     >
       {/* Logoบริษัท */}
-            <Box sx={{ position: 'absolute', top: -30, right: 50 }}>
-              <img
-                src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
-                alt="IRCP Logo"
-                style={{ width: 150, height: 150, objectFit: 'contain' }}
-              />
-            </Box>
+      <Box sx={{ position: 'absolute', top: -30, right: 50 }}>
+        <img
+          src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
+          alt="IRCP Logo"
+          style={{ width: 150, height: 150, objectFit: 'contain' }}
+        />
+      </Box>
       <Container maxWidth="md">
         {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
         <Card sx={{ mb: 4, boxShadow: 4 }}>
           <CardContent>
-            <Typography variant="h5" align="center" gutterBottom>
+            <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
               Welcome To Office
             </Typography>
 
             {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}
             {firstName && loginTime ? (
               <>
-                <Typography>ชื่อ - สกุล: {firstName}</Typography>
-                <Typography>ชื่อเล่น: {nickname}</Typography>
-                <Typography>เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
+                <Typography>
+                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อ - สกุล:</Typography>
+                  <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{firstName}</Typography>
+                </Typography>
+                <Typography>
+                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อเล่น:</Typography>
+                  <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{nickname}</Typography>
+                </Typography>
+                <Typography>
+                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>
+                    เวลาเข้างาน:
+                  </Typography>
+                  <Typography component="span" sx={{ fontWeight: 'bold', color: 'green' }}>
+                    {formatLoginTime(loginTime)}
+                  </Typography>
+                </Typography>
+
+                <Typography>
+                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>
+                    เวลาออกงาน:
+                  </Typography>
+                  <Typography component="span" sx={{ fontWeight: 'bold', color: 'blue' }}>
+                    {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
+                  </Typography>
+                </Typography>
+
+                <Box sx={{ my: 2 }}>
+                  <Typography>
+                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>
+                      เหลือเวลาอีก:
+                    </Typography>
+                    <Typography component="span" sx={{ fontWeight: 'bold', color: 'red' }}>
+                      {formatTime(remainingTime)}
+                    </Typography>
+                  </Typography>
+                </Box>
+
+
+                {/* <Typography>เวลาเข้างาน: {formatLoginTime(loginTime)}</Typography>
                 <Typography>
                   เวลาออกงาน: {formatLoginTime(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
                 </Typography>
                 <Box sx={{ my: 2 }}>
                   <Typography>เหลือเวลาอีก: {formatTime(remainingTime)}</Typography>
-                </Box>
+                </Box> */}
 
                 {/* ปุ่มออกงาน */}
                 <Button
