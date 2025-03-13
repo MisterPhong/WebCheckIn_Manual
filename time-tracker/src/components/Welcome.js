@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Typography, Card, CardContent, Container, CardActions, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import version from '../version'; // ดึงค่าจาก package.json
 
 const Welcome = () => {
   const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Welcome = () => {
   };
 
   const handleAdminLogin = () => {
-    navigate('/adminlogin'); //
+    navigate('/adminlogin');
   };
 
   return (
@@ -29,19 +30,15 @@ const Welcome = () => {
         position: 'relative',
       }}
     >
-      {/* Logoบริษัท */}
-      <Box
-        sx={{
-          position: 'absolute',
-          top: 16,
-        }}
-      >
+      {/* Logo บริษัท */}
+      <Box sx={{ position: 'absolute', top: 16 }}>
         <img
           src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
           alt="IRCP Logo"
           style={{ width: 200, height: 200, objectFit: 'contain' }}
         />
       </Box>
+
       <Container maxWidth="sm">
         <Card sx={{ boxShadow: 5, borderRadius: 2 }}>
           <CardContent>
@@ -151,10 +148,23 @@ const Welcome = () => {
                 สำหรับ ADMIN
               </Button>
             </Box>
-
           </CardContent>
         </Card>
       </Container>
+
+      {/* แสดง Version ที่ขวาล่าง */}
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: 10,
+          right: 20,
+          fontSize: '12px',
+          color: 'gray',
+          fontWeight: 'bold'
+        }}
+      >
+        Version: {version}
+      </Box>
     </Box>
   );
 };

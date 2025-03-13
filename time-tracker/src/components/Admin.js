@@ -93,7 +93,6 @@ const Admin = () => {
 
     const firstName = user.firstName ? user.firstName.toLowerCase() : "";
     const lastName = user.lastName ? user.lastName.toLowerCase() : "";
-    const nickname = user.nickname ? user.nickname.toLowerCase() : "";
     const formattedDate = user.loginTime ? formatDate(user.loginTime) : ""; //  แปลงวันที่ให้ตรงกับ UI
 
     const search = searchTerm ? searchTerm.toLowerCase() : ""; //  แปลง searchTerm เป็น lowerCase
@@ -200,29 +199,23 @@ const Admin = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
 
-
-            {/* Dropdown สำหรับเรียงข้อมูล */}
-            <FormControl sx={{ minWidth: 200, mb: 2 }}>
-              <Select
-                value={sortOption}
-                onChange={(e) => setSortOption(e.target.value)}
-                displayEmpty
-              >
-                <MenuItem value="date_desc">เรียงตามวันที่ (ล่าสุด → เก่าสุด)</MenuItem>
-                <MenuItem value="date_asc">เรียงตามวันที่ (เก่าสุด → ล่าสุด)</MenuItem>
-                <MenuItem value="name_asc">เรียงตามชื่อ (ก → ฮ)</MenuItem>
-                <MenuItem value="name_desc">เรียงตามชื่อ (ฮ → ก)</MenuItem>
-              </Select>
-            </FormControl>
-
             <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
               <Table size="small" stickyHeader>
+                <colgroup>
+                  <col style={{ width: '2%' }} />  {/* ลำดับ (แคบลง) */}
+                  <col style={{ width: '15%' }} /> {/* วันที่ */}
+                  <col style={{ width: '20%' }} /> {/* ชื่อ (กว้างขึ้น) */}
+                  <col style={{ width: '18%' }} /> {/* นามสกุล (กว้างขึ้น) */}
+                  <col style={{ width: '10%' }} /> {/* สถานะ */}
+                  <col style={{ width: '14.5%' }} /> {/* เวลาเข้างาน */}
+                  <col style={{ width: '15.5%' }} /> {/* เวลาออกงาน */}
+                </colgroup>
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
                     <TableCell>วันที่</TableCell>
-                    <TableCell>ชื่อ - สกุล</TableCell>
-                    <TableCell>ชื่อเล่น</TableCell>
+                    <TableCell>ชื่อ</TableCell>
+                    <TableCell>นามสกุล</TableCell>
                     <TableCell>สถานะ</TableCell>
                     <TableCell>เวลาเข้างาน</TableCell>
                     <TableCell>เวลาออกงาน</TableCell>
@@ -232,13 +225,18 @@ const Admin = () => {
                   {filteredData.length > 0 ? (
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
-                        <TableCell>{index + 1}</TableCell>
-                        <TableCell>{formatDate(user.loginTime)}</TableCell>
-                        <TableCell>{user.firstName} {user.lastName}</TableCell>
-                        <TableCell>{user.nickname}</TableCell>
-                        <TableCell>{user.status || '-'}</TableCell>
-                        <TableCell>{formatTimes(user.loginTime)}</TableCell>
-                        <TableCell>{user.logoutTime ? formatTimes(user.logoutTime) : 'ยังไม่ออกงาน'}</TableCell>
+                        <TableCell sx={{ width: '2%' }}>{index + 1}</TableCell>
+                        <TableCell sx={{ width: '15%' }}>{formatDate(user.loginTime)}</TableCell>
+                        <TableCell sx={{ width: '20%' }}>{user.firstName}</TableCell>
+                        <TableCell sx={{ width: '18%' }}>{user.lastName}</TableCell>
+                        <TableCell sx={{ width: '15%' }}>{user.status || '-'}</TableCell>
+                        <TableCell sx={{ width: '14.5%' }}>{formatTimes(user.loginTime)}</TableCell>
+                        <TableCell sx={{ width: '15.5%' }}>
+                          {user.logoutTime
+                            ? formatTimes(user.logoutTime)
+                            : (new Date(formatDate(user.loginTime)).getDate() < new Date().getDate() ? 'ยังไม่ออกงาน' : '-')
+                          }
+                        </TableCell>
                       </TableRow>
                     ))
                   ) : (
@@ -249,6 +247,8 @@ const Admin = () => {
                 </TableBody>
               </Table>
             </TableContainer>
+
+
           </CardContent>
         </Card>
       </Container>

@@ -23,8 +23,8 @@ const DashboardPage = () => {
 
   // อ่าน session จาก localStorage
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
-  // const { firstName, nickname, loginTime } = storedUser;
-  const { firstName, nickname, loginTime } = storedUser;
+  // const { firstName, lastName, loginTime } = storedUser;
+  const { firstName, lastName, loginTime } = storedUser;
 
   // สเตตสำหรับข้อมูลผู้ใช้ทั้งหมด (ที่โหลดจาก API)
   const [userData, setUserData] = useState([]);
@@ -152,7 +152,7 @@ const DashboardPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstName,
-          nickname,
+          lastName,
           loginTime,
           logoutTime: currentTime,
         }),
@@ -195,7 +195,7 @@ const DashboardPage = () => {
     // คำนวณเวลาที่เหลือ
     const loginDate = new Date(loginTime);
     const now = new Date();
-    const timeDifference = 0 * 3600000 - (now - loginDate);
+    const timeDifference = 9 * 3600000 - (now - loginDate);
 
     if (timeDifference > 0) {
       setRemainingTime(timeDifference);
@@ -224,7 +224,7 @@ const DashboardPage = () => {
   }, [firstName, loginTime, navigate]);
 
   const filteredData = userData.filter(
-    (user) => user.firstName === firstName && user.nickname === nickname
+    (user) => user.firstName === firstName && user.lastName === lastName
   );
 
 
@@ -279,7 +279,7 @@ const DashboardPage = () => {
                   </Typography>
                   <Typography>
                     <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อเล่น:</Typography>
-                    <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{nickname}</Typography>
+                    <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{lastName}</Typography>
                   </Typography>
                   <Typography>
                     <Typography component="span" sx={{ color: 'black', marginRight: '8px' }} >
@@ -345,10 +345,12 @@ const DashboardPage = () => {
             <Typography variant="h6" gutterBottom>
               ประวัติการเข้า-ออกงานย้อนหลัง
             </Typography>
-            <TableContainer component={Paper} sx={{ height: 270 }}>
+            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
               <Table size="small" stickyHeader>
+
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
+                    <TableCell>ลำดับ</TableCell>
                     <TableCell>วันที่</TableCell>
                     <TableCell>สถานะ</TableCell>
                     <TableCell>เวลาเข้างาน</TableCell>
@@ -357,34 +359,29 @@ const DashboardPage = () => {
                 </TableHead>
                 <TableBody>
                   {filteredData.length > 0 ? (
-                    [...filteredData]
-                      .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime)) // เรียงจากวันล่าสุดลงไป
-                      .map((user, index) => (
-                        <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
-                          <TableCell>{formatDate(user.loginTime)}</TableCell>
-                          <TableCell>{user.status || '-'}</TableCell>
-                          <TableCell>
-                            {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                              : user.status === 'ลากิจ' ? 'ลากิจ'
-                                : formatTimes(user.loginTime)}
-                          </TableCell>
-                          <TableCell>
-                            {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                              : user.status === 'ลากิจ' ? 'ลากิจ'
-                                : user.logoutTime
-                                  ? formatTimes(user.logoutTime)
-                                  : 'ยังไม่ออกงาน'}
-                          </TableCell>
-                        </TableRow>
-                      ))
+                    filteredData.map((user, index) => (
+                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
+                        <TableCell >{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
+                        <TableCell >{user.status || '-'}</TableCell>
+                        <TableCell >{formatTimes(user.loginTime)}</TableCell>
+                        <TableCell >
+                          {user.logoutTime
+                            ? formatTimes(user.logoutTime)
+                            : (new Date(formatDate(user.loginTime)).getDate() < new Date().getDate() ? 'ยังไม่ออกงาน' : '-')
+                          }
+                        </TableCell>
+                      </TableRow>
+                    ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
+                      <TableCell colSpan={7} align="center">ไม่พบข้อมูล</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
               </Table>
             </TableContainer>
+
           </CardContent>
         </Card>
       </Container>

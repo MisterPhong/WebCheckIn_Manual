@@ -21,7 +21,7 @@ const requiredLocation = {
 
 const LoginPage = () => {
   const [firstName, setFirstName] = useState('');
-  const [nickname, setNickname] = useState('');
+  const [lastName, setlastName] = useState('');
   const [checkedDashboard, setCheckedDashboard] = useState(null);
   const [checkedIsWorking, setCheckedIsWorking] = useState(false);
   const [isLocationValid, setIsLocationValid] = useState(true);
@@ -57,7 +57,7 @@ const LoginPage = () => {
     const currentLoginTime = new Date().toISOString();
     let status = '';
 
-    if (checkedDashboard === 1) status = 'มา';
+    if (checkedDashboard === 1) status = 'ทำงานปกติ';
     else if (checkedDashboard === 2) status = 'ลาป่วย';
     else if (checkedDashboard === 3) status = 'ลากิจ';
     else {
@@ -69,7 +69,7 @@ const LoginPage = () => {
       const response = await fetch('http://localhost:5000/api/user/save', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ firstName, nickname, loginTime: currentLoginTime, status }),
+        body: JSON.stringify({ firstName, lastName, loginTime: currentLoginTime, status }),
       });
 
       if (!response.ok) {
@@ -77,9 +77,9 @@ const LoginPage = () => {
         return;
       }
 
-      localStorage.setItem('userSession', JSON.stringify({ firstName, nickname, status, loginTime: currentLoginTime }));
+      localStorage.setItem('userSession', JSON.stringify({ firstName, lastName, status, loginTime: currentLoginTime }));
 
-      if (status === 'มา') navigate('/dashboard');
+      if (status === 'ทำงานปกติ') navigate('/dashboard');
       else if (status === 'ลาป่วย') navigate('/dashboard1');
       else if (status === 'ลากิจ') navigate('/dashboard2');
     } catch (error) {
@@ -92,7 +92,7 @@ const LoginPage = () => {
     const session = localStorage.getItem('userSession');
     if (session) {
       const data = JSON.parse(session);
-      if (data.status === 'มา') navigate('/dashboard');
+      if (data.status === 'ทำงานปกติ') navigate('/dashboard');
       else if (data.status === 'ลาป่วย') navigate('/dashboard1');
       else if (data.status === 'ลากิจ') navigate('/dashboard2');
     }
@@ -151,13 +151,13 @@ const LoginPage = () => {
             </Typography>
 
             <Box component="form" onSubmit={handleSubmit} sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              <TextField label="ชื่อ สกุล" variant="outlined" fullWidth value={firstName} onChange={(e) => setFirstName(e.target.value)} />
-              <TextField label="ชื่อเล่น" variant="outlined" fullWidth value={nickname} onChange={(e) => setNickname(e.target.value)} />
+              <TextField label="ชื่อ" variant="outlined" fullWidth value={firstName} onChange={(e) => setFirstName(e.target.value)} />
+              <TextField label="สกุล" variant="outlined" fullWidth value={lastName} onChange={(e) => setlastName(e.target.value)} />
 
               <Box>
                 <FormControlLabel
                   control={<Checkbox checked={checkedDashboard === 1} onChange={() => { setCheckedDashboard(1); setCheckedIsWorking(true); }} />}
-                  label="มาทำงานปกติ"
+                  label="ทำงานปกติ"
                 />
                 <FormControlLabel
                   control={<Checkbox checked={checkedDashboard === 2} onChange={() => { setCheckedDashboard(2); setCheckedIsWorking(false); }} />}

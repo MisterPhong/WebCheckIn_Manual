@@ -4,12 +4,12 @@ const router = express.Router();
 
 // POST route to save user data
 router.post('/save', async (req, res) => {
-  const { firstName, nickname, loginTime, status } = req.body;
+  const { firstName, lastName, loginTime, status } = req.body;
 
   try {
     const newUser = new User({
       firstName,
-      nickname,
+      lastName,
       loginTime: new Date(loginTime), // Ensure it's a Date object
       status, 
     });
@@ -24,10 +24,10 @@ router.post('/save', async (req, res) => {
 
 // POST route to save logout time
 router.post('/saveLogoutTime', async (req, res) => {
-  const { firstName, nickname, loginTime, logoutTime } = req.body;
+  const { firstName, lastName, loginTime, logoutTime } = req.body;
 
   try {
-    const user = await User.findOne({ firstName, nickname, loginTime: new Date(loginTime) });
+    const user = await User.findOne({ firstName, lastName, loginTime: new Date(loginTime) });
 
     if (user) {
       user.logoutTime = new Date(logoutTime); // Save logout time as Date object

@@ -20,7 +20,7 @@ import { useNavigate } from 'react-router-dom';
 const DashboardPage2 = () => {
   const navigate = useNavigate();
   const storedUser = JSON.parse(localStorage.getItem('userSession')) || {};
-  const { firstName, nickname, loginTime,
+  const { firstName, lastName, loginTime,
     status } = storedUser;
   const [userData, setUserData] = useState([]);
 
@@ -35,7 +35,7 @@ const DashboardPage2 = () => {
     });
   };
 
-  
+
 
   const formatDate = (timeString) => {
     if (!timeString) return '-';
@@ -61,7 +61,7 @@ const DashboardPage2 = () => {
 
 
   useEffect(() => {
-    if (!firstName || !nickname) {
+    if (!firstName || !lastName) {
       navigate('/');
       return;
     }
@@ -76,10 +76,10 @@ const DashboardPage2 = () => {
       }
     };
     fetchUserData();
-  }, [firstName, nickname, navigate]);
+  }, [firstName, lastName, navigate]);
 
   const filteredData = userData.filter(
-    (user) => user.firstName === firstName && user.nickname === nickname
+    (user) => user.firstName === firstName && user.lastName === lastName
   );
 
   return (
@@ -113,28 +113,28 @@ const DashboardPage2 = () => {
             <Box
               sx={{
                 display: 'flex',
-                justifyContent: 'center', 
-                alignItems: 'center', 
-                gap: 2, 
-                mb: 2, 
+                justifyContent: 'center',
+                alignItems: 'center',
+                gap: 2,
+                mb: 2,
               }}
             >
               {/* รูปภาพ */}
               <Box
                 sx={{
-                  width: 150, 
+                  width: 150,
                   height: 150,
                   overflow: 'hidden',
                   borderRadius: '8px',
                 }}
               >
                 <img
-                  src="https://www.chulagradeuptutor.com/wp-content/uploads/2020/04/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B8%B2%E0%B8%99.png" 
+                  src="https://www.chulagradeuptutor.com/wp-content/uploads/2020/04/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B8%B2%E0%B8%99.png"
                   alt="User Profile"
                   style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'scale-down', 
+                    objectFit: 'scale-down',
                   }}
                 />
               </Box>
@@ -147,7 +147,7 @@ const DashboardPage2 = () => {
                 </Typography>
                 <Typography>
                   <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อเล่น:</Typography>
-                  <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{nickname}</Typography>
+                  <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{lastName}</Typography>
                 </Typography>
                 <Typography>
                   <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>เวลากรอกฟอร์ม:</Typography>
@@ -172,52 +172,48 @@ const DashboardPage2 = () => {
 
         {/* Card for User History */}
         <Card sx={{ boxShadow: 4 }}>
-                  <CardContent>
-                    <Typography variant="h6" gutterBottom>
-                      ประวัติการเข้า-ออกงานย้อนหลัง
-                    </Typography>
-                    <TableContainer component={Paper} sx={{ height: 270 }}>
-                      <Table size="small" stickyHeader>
-                        <TableHead>
-                          <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
-                            <TableCell>วันที่</TableCell>
-                            <TableCell>สถานะ</TableCell>
-                            <TableCell>เวลาเข้างาน</TableCell>
-                            <TableCell>เวลาออกงาน</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {filteredData.length > 0 ? (
-                            [...filteredData]
-                              .sort((a, b) => new Date(b.loginTime) - new Date(a.loginTime)) // เรียงจากวันล่าสุดลงไป
-                              .map((user, index) => (
-                                <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
-                                  <TableCell>{formatDate(user.loginTime)}</TableCell>
-                                  <TableCell>{user.status || '-'}</TableCell>
-                                  <TableCell>
-                                    {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                                      : user.status === 'ลากิจ' ? 'ลากิจ'
-                                        : formatDateTime(user.loginTime)}
-                                  </TableCell>
-                                  <TableCell>
-                                    {user.status === 'ลาป่วย' ? 'ลาป่วย'
-                                      : user.status === 'ลากิจ' ? 'ลากิจ'
-                                        : user.logoutTime
-                                          ? formatDateTime(user.logoutTime)
-                                          : 'ยังไม่ออกงาน'}
-                                  </TableCell>
-                                </TableRow>
-                              ))
-                          ) : (
-                            <TableRow>
-                              <TableCell colSpan={7} align="center">ไม่พบข้อมูลย้อนหลัง</TableCell>
-                            </TableRow>
-                          )}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  </CardContent>
-                </Card>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              ประวัติการเข้า-ออกงานย้อนหลัง
+            </Typography>
+            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+              <Table size="small" stickyHeader>
+
+                <TableHead>
+                  <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
+                    <TableCell>ลำดับ</TableCell>
+                    <TableCell>วันที่</TableCell>
+                    <TableCell>สถานะ</TableCell>
+                    <TableCell>เวลาเข้างาน</TableCell>
+                    <TableCell>เวลาออกงาน</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredData.length > 0 ? (
+                    filteredData.map((user, index) => (
+                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
+                        <TableCell >{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
+                        <TableCell >{user.status || '-'}</TableCell>
+                        <TableCell >{formatTimes(user.loginTime)}</TableCell>
+                        <TableCell >
+                          {user.logoutTime
+                            ? formatTimes(user.logoutTime)
+                            : (new Date(formatDate(user.loginTime)).getDate() < new Date().getDate() ? 'ยังไม่ออกงาน' : '-')
+                          }
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} align="center">ไม่พบข้อมูล</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </CardContent>
+        </Card>
       </Container>
     </Box>
   );
