@@ -133,7 +133,7 @@ const Welcome = () => {
             <Box sx={{ textAlign: 'center', mt: 2 }}>
               <Button
                 variant="contained"
-                color="secondary"
+                color="primary"
                 onClick={handleAdminLogin}
                 sx={{
                   fontSize: '16px',
