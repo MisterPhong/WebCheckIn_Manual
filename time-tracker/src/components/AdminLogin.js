@@ -10,8 +10,8 @@ const AdminLogin = () => {
 
   const handleLogin = () => {
     if (username === 'Admin' && password === 'Admin') {
-      localStorage.setItem('isAdminLoggedIn', 'true'); // ✅ บันทึกการล็อกอิน
-      navigate('/admin'); // ✅ ไปที่หน้า Admin
+      localStorage.setItem('isAdminLoggedIn', 'true'); // บันทึกการล็อกอิน
+      navigate('/admin'); // ไปที่หน้า Admin
     } else {
       setError(true);
     }
