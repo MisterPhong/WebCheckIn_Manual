@@ -28,6 +28,32 @@ const AdminLogin = () => {
         background: 'linear-gradient(to bottom right, rgba(254, 255, 255, 0.81), rgb(136, 222, 251))',
       }}
     >
+      {/* Logoบริษัท */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 16,
+        }}
+      >
+        <img
+          src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
+          alt="IRCP Logo"
+          style={{ width: 200, height: 200, objectFit: 'contain' }}
+        />
+      </Box>
+      {/* ปุ่มย้อนกลับ มุมซ้ายบน */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => navigate(-1)}
+        sx={{
+          position: 'absolute',
+          top: 16,
+          left: 16,
+        }}
+      >
+        ย้อนกลับ
+      </Button>
       <Container maxWidth="sm">
         <Card sx={{ boxShadow: 5, borderRadius: 2, p: 3 }}>
           <CardContent>
