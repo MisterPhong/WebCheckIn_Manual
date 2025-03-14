@@ -139,11 +139,11 @@ const DashboardPage1 = () => {
               {/* ข้อมูล */}
               <Box sx={{ textAlign: 'left' }}>
                 <Typography>
-                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อ - สกุล:</Typography>
+                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อ :</Typography>
                   <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{firstName}</Typography>
                 </Typography>
                 <Typography>
-                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อเล่น:</Typography>
+                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>นามสกุล :</Typography>
                   <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{lastName}</Typography>
                 </Typography>
                 <Typography>
@@ -170,7 +170,7 @@ const DashboardPage1 = () => {
             <Button variant="contained" onClick={() => navigate('/')}>กลับไปหน้าแรก</Button>
 
             <Button variant="contained" onClick={() => navigate('/tablenormal')}>
-              ดูข้อมูลสถิติย้อนหลัง
+              ประวัติการเข้า-ออกงาน
             </Button>
           </CardActions>
 

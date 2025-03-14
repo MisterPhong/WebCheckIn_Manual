@@ -242,6 +242,14 @@ const TableNormal = () => {
         py: 4,
       }}
     >
+      <Button
+        variant="contained"
+        color="primary"
+        sx={{ position: 'absolute', top: 20, left: 20 }}
+        onClick={() => navigate(-1)}
+      >
+        ย้อนกลับ
+      </Button>
       {/* Logoบริษัท */}
       <Box sx={{ position: 'absolute', top: -30, right: 50 }}>
         <img
@@ -254,8 +262,8 @@ const TableNormal = () => {
         {/* Card สอง: ตารางข้อมูลผู้ใช้ */}
         <Card sx={{ boxShadow: 4 }}>
           <CardContent>
-            <Typography variant="h6" gutterBottom > 
-              ประวัติการเข้า-ออกงานย้อนหลัง
+            <Typography variant="h6" gutterBottom >
+              ประวัติการเข้า-ออกงานทั้งหมด
             </Typography>
             <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
               <Table size="small" stickyHeader>
