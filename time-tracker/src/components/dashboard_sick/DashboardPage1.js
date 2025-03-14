@@ -168,53 +168,14 @@ const DashboardPage1 = () => {
           </CardContent>
           <CardActions sx={{ justifyContent: 'center' }}>
             <Button variant="contained" onClick={() => navigate('/')}>กลับไปหน้าแรก</Button>
+
+            <Button variant="contained" onClick={() => navigate('/tablenormal')}>
+              ดูข้อมูลสถิติย้อนหลัง
+            </Button>
           </CardActions>
+
         </Card>
 
-        {/* Card for User History */}
-        <Card sx={{ boxShadow: 4 }}>
-          <CardContent>
-            <Typography variant="h6" gutterBottom>
-              ประวัติการเข้า-ออกงาน
-            </Typography>
-            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
-              <Table size="small" stickyHeader>
-
-                <TableHead>
-                  <TableRow sx={{ '& th': { backgroundColor: 'skyblue', fontWeight: 'bold' } }}>
-                    <TableCell>ลำดับ</TableCell>
-                    <TableCell>วันที่</TableCell>
-                    <TableCell>สถานะ</TableCell>
-                    <TableCell>เวลาเข้างาน</TableCell>
-                    <TableCell>เวลาออกงาน</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {filteredData.length > 0 ? (
-                    filteredData.map((user, index) => (
-                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'white' } }}>
-                        <TableCell >{index + 1}</TableCell>
-                        <TableCell>{formatDate(user.loginTime)}</TableCell>
-                        <TableCell >{user.status || '-'}</TableCell>
-                        <TableCell >{formatTimes(user.loginTime)}</TableCell>
-                        <TableCell >
-                          {user.logoutTime
-                            ? formatTimes(user.logoutTime)
-                            : (new Date(formatDate(user.loginTime)).getDate() < new Date().getDate() ? 'ยังไม่ออกงาน' : '-')
-                          }
-                        </TableCell>
-                      </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={7} align="center">ไม่พบข้อมูล</TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </TableContainer>
-          </CardContent>
-        </Card>
       </Container>
     </Box>
   );

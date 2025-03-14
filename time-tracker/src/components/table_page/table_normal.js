@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
-const DashboardPage = () => {
+const TableNormal = () => {
   const navigate = useNavigate();
 
   // อ่าน session จาก localStorage
@@ -251,90 +251,54 @@ const DashboardPage = () => {
         />
       </Box>
       <Container maxWidth="md" sx={{ maxWidth: '100%', overflow: 'hidden' }}>
-        {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
-        {/* Card แรก: ข้อมูลผู้ใช้ + ปุ่มออกงาน */}
-        <Card sx={{ mb: 4, boxShadow: 4 }}>
+        {/* Card สอง: ตารางข้อมูลผู้ใช้ */}
+        <Card sx={{ boxShadow: 4 }}>
           <CardContent>
-            <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
-              Welcome To Office
+            <Typography variant="h6" gutterBottom > 
+              ประวัติการเข้า-ออกงานย้อนหลัง
             </Typography>
+            <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
+              <Table size="small" stickyHeader>
 
-            {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}
-            {firstName && loginTime ? (
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {/* ข้อมูลผู้ใช้ */}
-                <Box>
-                  <Typography>
-                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อ - สกุล:</Typography>
-                    <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{firstName}</Typography>
-                  </Typography>
-                  <Typography>
-                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อเล่น:</Typography>
-                    <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{lastName}</Typography>
-                  </Typography>
-                  <Typography>
-                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }} >
-                      เวลาเข้างาน:
-                    </Typography>
-                    <Typography component="span" sx={{ fontWeight: 'bold', color: 'green' }}>
-                      {formatTimes(loginTime)}
-                    </Typography>
-                  </Typography>
+                <TableHead>
+                  <TableRow sx={{ '& th': { backgroundColor: 'skyblue', fontWeight: 'bold' } }}>
+                    <TableCell>ลำดับ</TableCell>
+                    <TableCell>วันที่</TableCell>
+                    <TableCell>สถานะ</TableCell>
+                    <TableCell>เวลาเข้างาน</TableCell>
+                    <TableCell>เวลาออกงาน</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {filteredData.length > 0 ? (
+                    filteredData.map((user, index) => (
+                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'white' } }}>
+                        <TableCell >{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
+                        <TableCell >{user.status || '-'}</TableCell>
+                        <TableCell >{formatTimes(user.loginTime)}</TableCell>
+                        <TableCell >
+                          {user.logoutTime
+                            ? formatTimes(user.logoutTime)
+                            : (new Date(formatDate(user.loginTime)).getDate() < new Date().getDate() ? 'ยังไม่ออกงาน' : '-')
+                          }
+                        </TableCell>
+                      </TableRow>
+                    ))
+                  ) : (
+                    <TableRow>
+                      <TableCell colSpan={7} align="center">ไม่พบข้อมูล</TableCell>
+                    </TableRow>
+                  )}
+                </TableBody>
+              </Table>
 
-                  <Typography>
-                    <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>
-                      เวลาออกงาน:
-                    </Typography>
-                    <Typography component="span" sx={{ fontWeight: 'bold', color: 'blue' }}>
-                      {formatTimes(new Date(new Date(loginTime).getTime() + 9 * 3600000))}
-                    </Typography>
-                  </Typography>
-
-                  <Box sx={{ my: 2 }}>
-                    <Typography>
-                      <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>
-                        เหลือเวลาอีก:
-                      </Typography>
-                      <Typography component="span" sx={{ fontWeight: 'bold', color: 'red' }}>
-                        {formatTime(remainingTime)}
-                      </Typography>
-                    </Typography>
-                  </Box>
-                </Box>
-              </Box>
-            ) : (
-              <Typography variant="h6">No data available</Typography>
-            )}
-
-            {/* ปุ่มออกงาน */}
-            <Button
-              variant="contained"
-              color="warning"
-              fullWidth
-              disabled={!isLogoutEnabled || isOutOfRange}
-              onClick={handleLogout}
-            >
-              ออกงาน
-            </Button>
-            {isOutOfRange && (
-              <Typography variant="body2" color="error" sx={{ mt: 1 }}>
-                คุณอยู่นอกเขต 1 กิโลเมตร ไม่สามารถออกงานได้
-              </Typography>
-            )}
+            </TableContainer>
           </CardContent>
-
-          <CardActions sx={{ justifyContent: 'center' }}>
-            <Button variant="contained" onClick={() => navigate('/')}>
-              กลับไปหน้าแรก
-            </Button>
-            <Button variant="contained" onClick={() => navigate('/tablenormal')}>
-              ดูข้อมูลสถิติย้อนหลัง
-            </Button>
-          </CardActions>
         </Card>
       </Container>
     </Box>
   );
 };
 
-export default DashboardPage;
+export default TableNormal;

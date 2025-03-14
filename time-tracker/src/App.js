@@ -10,6 +10,7 @@ import Manual from './components/menu_all/Manual';
 import ManualSup from './components/menu_all/ManualS';
 import Admin from './components/admin_page/Admin';
 import AdminLogin from './components/admin_page/AdminLogin';
+import TableNormal from './components/table_page/table_normal';
 
 const App = () => {
   return (
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/menu" element={<ChnageManu />} />
         <Route path="/menus" element={<ManualSup />} />
         <Route path="/admin" element={<Admin />} />
+        <Route path="/tablenormal" element={<TableNormal />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/" element={<Welcome />} />
       </Routes>
