@@ -262,15 +262,6 @@ const DashboardPage = () => {
             {/* ถ้ามีข้อมูล แสดงชื่อ สถานะ ฯลฯ */}
             {firstName && loginTime ? (
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {/* รูปภาพ */}
-                <Box sx={{ mr: 3 }}>
-                  <img
-                    src="https://i.pinimg.com/736x/5d/b3/60/5db360def4d6a542f802d74cc94fe549.jpg"
-                    alt="User"
-                    style={{ width: 80, height: 80, borderRadius: '50%', objectFit: 'cover' }}
-                  />
-                </Box>
-
                 {/* ข้อมูลผู้ใช้ */}
                 <Box>
                   <Typography>
@@ -349,7 +340,7 @@ const DashboardPage = () => {
               <Table size="small" stickyHeader>
 
                 <TableHead>
-                  <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
+                  <TableRow sx={{ '& th': { backgroundColor: 'skyblue', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
                     <TableCell>วันที่</TableCell>
                     <TableCell>สถานะ</TableCell>
@@ -360,7 +351,7 @@ const DashboardPage = () => {
                 <TableBody>
                   {filteredData.length > 0 ? (
                     filteredData.map((user, index) => (
-                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
+                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'white' } }}>
                         <TableCell >{index + 1}</TableCell>
                         <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell >{user.status || '-'}</TableCell>

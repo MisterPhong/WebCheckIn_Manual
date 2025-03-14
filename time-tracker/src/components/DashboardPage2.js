@@ -180,7 +180,7 @@ const DashboardPage2 = () => {
               <Table size="small" stickyHeader>
 
                 <TableHead>
-                  <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
+                  <TableRow sx={{ '& th': { backgroundColor: 'skyblue', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
                     <TableCell>วันที่</TableCell>
                     <TableCell>สถานะ</TableCell>
@@ -191,7 +191,7 @@ const DashboardPage2 = () => {
                 <TableBody>
                   {filteredData.length > 0 ? (
                     filteredData.map((user, index) => (
-                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
+                      <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'white' } }}>
                         <TableCell >{index + 1}</TableCell>
                         <TableCell>{formatDate(user.loginTime)}</TableCell>
                         <TableCell >{user.status || '-'}</TableCell>

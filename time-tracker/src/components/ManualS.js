@@ -38,7 +38,7 @@ const ManualSup = () => {
             gutterBottom
             sx={{ color: '#01579b', fontWeight: 'bold' }} // กำหนดสีของข้อความหัวข้อ
           >
-            คู่มือการทำงาน
+            ระเบียบการปฏิบัติงาน
           </Typography>
 
           {/* PDF Viewer */}

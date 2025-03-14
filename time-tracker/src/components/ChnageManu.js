@@ -125,7 +125,7 @@ const ChnageManu = () => {
                     borderRadius: 1,
                   }}
                 >
-                  คู่มือการทำงาน
+                  ระเบียบการปฏิบัติงาน
                 </Typography>
               </Box>
             </Box>
