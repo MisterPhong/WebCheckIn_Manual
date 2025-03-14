@@ -11,6 +11,7 @@ import ManualSup from './components/menu_all/ManualS';
 import Admin from './components/admin_page/Admin';
 import AdminLogin from './components/admin_page/AdminLogin';
 import TableNormal from './components/table_page/table_normal';
+import TableAdmin from './components/table_admin/TableAdmin';
 
 const App = () => {
   return (
@@ -25,6 +26,7 @@ const App = () => {
         <Route path="/menus" element={<ManualSup />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="/tablenormal" element={<TableNormal />} />
+        <Route path="/tableadmin" element={<TableAdmin />} />
         <Route path="/adminlogin" element={<AdminLogin />} />
         <Route path="/" element={<Welcome />} />
       </Routes>
