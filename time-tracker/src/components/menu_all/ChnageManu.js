@@ -87,6 +87,7 @@ const ChnageManu = () => {
                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
                     padding: '4px 8px',
                     borderRadius: 1,
+                    fontSize: "18px"
                   }}
                 >
                   Quick Start Guide
@@ -123,6 +124,7 @@ const ChnageManu = () => {
                     backgroundColor: 'rgba(0, 0, 0, 0.5)',
                     padding: '4px 8px',
                     borderRadius: 1,
+                    fontSize: "18px"
                   }}
                 >
                   ระเบียบการปฏิบัติงาน

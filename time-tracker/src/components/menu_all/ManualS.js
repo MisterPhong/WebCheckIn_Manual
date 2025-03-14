@@ -1,18 +1,15 @@
 import React from 'react';
 import { Box, Container, Typography, Button } from '@mui/material';
 import { Viewer, Worker } from '@react-pdf-viewer/core';
-import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import { useNavigate } from 'react-router-dom';
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 
 const ManualSup = () => {
   const navigate = useNavigate();
-  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   return (
     <Box sx={{ backgroundColor: '#e0f7fa', minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-      <Box sx={{ position: 'absolute', top: -30, right: 5 }}>{/* Logoบริษัท */}
+      <Box sx={{ position: 'absolute', top: -30, right: 5 }}>
         <img
           src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
           alt="IRCP Logo"
@@ -23,20 +20,19 @@ const ManualSup = () => {
         variant="contained"
         color="primary"
         sx={{ position: 'absolute', top: 20, left: 20 }}
-        onClick={() => navigate(-1)} 
+        onClick={() => navigate(-1)}
       >
         ย้อนกลับ
       </Button>
-
       <Container
         maxWidth="lg"
-        sx={{ backgroundColor: '#ffffff', padding: 3, borderRadius: 2, boxShadow: 3 }} // กำหนดสีพื้นหลังของ Container
+        sx={{ backgroundColor: '#ffffff', padding: 3, borderRadius: 2, boxShadow: 3 }}
       >
         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <Typography
             variant="h6"
             gutterBottom
-            sx={{ color: '#01579b', fontWeight: 'bold' }} // กำหนดสีของข้อความหัวข้อ
+            sx={{ color: '#01579b', fontWeight: 'bold' }}
           >
             ระเบียบการปฏิบัติงาน
           </Typography>
@@ -52,7 +48,7 @@ const ManualSup = () => {
             boxShadow: 4,
           }}>
             <Worker workerUrl={`https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js`}>
-              <Viewer fileUrl="/ManDD.pdf" plugins={[defaultLayoutPluginInstance]} />
+              <Viewer fileUrl="/ManualDX.pdf" />
             </Worker>
           </Box>
         </Box>

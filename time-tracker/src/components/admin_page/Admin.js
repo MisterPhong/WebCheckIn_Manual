@@ -17,9 +17,15 @@ import {
   FormControl,
   Select,
   MenuItem,
-  TextField
+  TextField,
+  IconButton,
+  Menu,
 } from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 import { useNavigate } from 'react-router-dom';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import dayjs from 'dayjs';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 
 const Admin = () => {
   const navigate = useNavigate();
@@ -27,15 +33,18 @@ const Admin = () => {
   const { firstName, nickname, loginTime, status } = storedUser;
   const [userData, setUserData] = useState([]);
   const [sortOption, setSortOption] = useState('date_desc');
-  const [searchTerm, setSearchTerm] = useState(''); // คำที่ใช้ค้นหา
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [dateMenuAnchorEl, setDateMenuAnchorEl] = useState(null);
+  const [statusMenuAnchorEl, setStatusMenuAnchorEl] = useState(null);
 
   useEffect(() => {
     const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn');
     if (!isAdminLoggedIn) {
-      navigate('/'); // 
+      navigate('/');
     }
   }, [navigate]);
-
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -61,12 +70,6 @@ const Admin = () => {
     }).replace(dateObj.getFullYear().toString(), buddhistYear.toString());
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('isAdminLoggedIn'); // ลบข้อมูลการล็อกอิน
-    navigate('/AdminLogin'); // กลับไปหน้า Login
-  };
-
-
   const formatTimes = (timeString) => {
     if (!timeString) return '-';
     const dateObj = new Date(timeString);
@@ -78,31 +81,54 @@ const Admin = () => {
     });
   };
 
-  const sortedData = [...userData].sort((a, b) => {
-    if (sortOption === 'date_desc') return new Date(b.loginTime) - new Date(a.loginTime);
-    if (sortOption === 'date_asc') return new Date(a.loginTime) - new Date(b.loginTime);
-    if (sortOption === 'name_asc') return a.firstName.localeCompare(b.firstName);
-    if (sortOption === 'name_desc') return b.firstName.localeCompare(a.firstName);
-    return 0;
-  });
+  const handleLogout = () => {
+    localStorage.removeItem('isAdminLoggedIn');
+    navigate('/AdminLogin');
+  };
 
+  const handleOpenDateMenu = (event) => {
+    setDateMenuAnchorEl(event.currentTarget);
+  };
 
-  // ตรวจสอบ userData และ searchTerm ก่อนกรองข้อมูล
-  const filteredData = sortedData.filter(user => {
-    if (!user) return false; // ถ้าข้อมูลเป็น null หรือ undefined ไม่ต้องแสดง
+  const handleCloseDateMenu = () => {
+    setDateMenuAnchorEl(null);
+  };
 
-    const firstName = user.firstName ? user.firstName.toLowerCase() : "";
-    const lastName = user.lastName ? user.lastName.toLowerCase() : "";
-    const formattedDate = user.loginTime ? formatDate(user.loginTime) : ""; //  แปลงวันที่ให้ตรงกับ UI
+  const handleOpenStatusMenu = (event) => {
+    setStatusMenuAnchorEl(event.currentTarget);
+  };
 
-    const search = searchTerm ? searchTerm.toLowerCase() : ""; //  แปลง searchTerm เป็น lowerCase
+  const handleCloseStatusMenu = () => {
+    setStatusMenuAnchorEl(null);
+  };
 
-    return (
-      firstName.includes(search) ||
-      lastName.includes(search) ||
-      nickname.includes(search) ||
-      formattedDate.includes(search) //  ค้นหาในวันที่
-    );
+  const handleDateChange = (newDate) => {
+    setSelectedDate(newDate);
+    setDateMenuAnchorEl(null);
+  };
+
+  const handleFilterChange = (value) => {
+    setStatusFilter(value);
+    handleCloseStatusMenu();
+  };
+
+  // ฟังก์ชันกรองข้อมูลตามวันที่, สถานะ, และชื่อ
+  const filteredData = userData.filter(user => {
+    const loginDate = new Date(user.loginTime).toDateString();
+    const selectedDateString = selectedDate ? selectedDate.toDate().toDateString() : null;
+
+    // กรองตามวันที่
+    const dateFilter = selectedDate ? loginDate === selectedDateString : true;
+
+    // กรองตามสถานะ
+    const statusFilterCondition = statusFilter === '' || (user.status && user.status === statusFilter);
+
+    // กรองตามชื่อ (ค้นหาแบบไม่สนใจตัวพิมพ์เล็ก-ใหญ่)
+    const nameFilter = searchTerm === '' || 
+      (user.firstName && user.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (user.lastName && user.lastName.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    return dateFilter && statusFilterCondition && nameFilter;
   });
 
   return (
@@ -113,26 +139,34 @@ const Admin = () => {
         overflow: "hidden",
         background: 'linear-gradient(to bottom right, rgba(254, 255, 255, 0.81), rgb(136, 222, 251))',
         py: 4,
+        position: 'relative',
       }}
     >
-      {/* Logoบริษัท */}
-      <Box sx={{ position: 'absolute', top: -30, right: 50 }}>
+      {/* Logo */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 20,
+          right: 50,
+          zIndex: 1000,
+        }}
+      >
         <img
           src="https://www.ircp.co.th/wp-content/uploads/2023/09/IRCP_logo.png"
           alt="IRCP Logo"
-          style={{ width: 150, height: 150, objectFit: 'contain' }}
+          style={{ width: 150, height: 80, objectFit: 'contain' }}
         />
       </Box>
 
-      <Container maxWidth="md">
-        {/* Card for User Information */}
-        <Card sx={{ mb: 4, boxShadow: 4 }}>
+      {/* ปรับ Container ให้มี margin-top เพื่อไม่ให้ทับ Logo */}
+      <Container maxWidth="lg" sx={{ marginTop: '80px' }}>
+        {/* Card สำหรับข้อมูล Admin */}
+        <Card sx={{ mb: 4, boxShadow: 4, width: '100%', maxWidth: '100%', padding: 3 }}>
           <CardContent>
             <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
               Admin
             </Typography>
 
-            {/* Box สำหรับการจัดตำแหน่งข้อมูลและรูปภาพ */}
             <Box
               sx={{
                 display: 'flex',
@@ -142,11 +176,11 @@ const Admin = () => {
                 mb: 2,
               }}
             >
-              {/* รูปภาพ */}
+              {/* ปรับขนาด Box และรูปภาพให้ใหญ่ขึ้น */}
               <Box
                 sx={{
-                  width: 300,
-                  height: 150,
+                  width: 400, // ขยายความกว้าง
+                  height: 150, // ขยายความสูง
                   overflow: 'hidden',
                   borderRadius: '8px',
                 }}
@@ -157,81 +191,105 @@ const Admin = () => {
                   style={{
                     width: '100%',
                     height: '100%',
-                    objectFit: 'scale-down',
+                    objectFit: 'cover', // ขยายรูปภาพให้เต็มพื้นที่
                   }}
                 />
               </Box>
 
-              {/* ข้อมูล */}
               <Box sx={{ textAlign: 'left' }}>
-                {/* <Typography>
-                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อ - สกุล:</Typography>
-                  <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{firstName}</Typography>
-                </Typography>
                 <Typography>
-                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>ชื่อเล่น:</Typography>
-                  <Typography component="span" sx={{ color: 'black', fontWeight: 'bold' }}>{nickname}</Typography>
-                </Typography> */}
+                  <Typography component="span" sx={{ color: 'black', marginRight: '8px' }}>Welcome Admin</Typography>
+                  <Typography>Hello กันว่าง</Typography>
+                </Typography>
               </Box>
             </Box>
           </CardContent>
-          <CardActions sx={{ justifyContent: 'center' }}>
-            <Button variant="contained" color="error" onClick={handleLogout}>
-              ออกจากระบบ
-            </Button>
-          </CardActions>
         </Card>
 
-        {/* Card for User History */}
-        <Card sx={{ boxShadow: 4 }}>
+        {/* Card สำหรับประวัติการเข้า-ออกงาน */}
+        <Card sx={{ boxShadow: 4, width: '100%', maxWidth: '100%', padding: 3 }}>
           <CardContent>
             <Typography variant="h6" gutterBottom>
               ประวัติการเข้า-ออกงาน (นักศึกษาฝึกงาน)
             </Typography>
 
-
+            {/* ช่องค้นหา */}
             <TextField
-              label="ค้นหาโดย ชื่อ - สกุล ชื่อเล่น หรือ วันที่"
-              variant="outlined"
               fullWidth
-              sx={{ mb: 2 }}
+              label="ค้นหาชื่อ"
+              variant="outlined"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              sx={{ mb: 2 }}
             />
 
             <TableContainer component={Paper} sx={{ maxHeight: 400 }}>
               <Table size="small" stickyHeader>
                 <colgroup>
-                  <col style={{ width: '2%' }} />  {/* ลำดับ (แคบลง) */}
-                  <col style={{ width: '15%' }} /> {/* วันที่ */}
-                  <col style={{ width: '20%' }} /> {/* ชื่อ (กว้างขึ้น) */}
-                  <col style={{ width: '18%' }} /> {/* นามสกุล (กว้างขึ้น) */}
-                  <col style={{ width: '10%' }} /> {/* สถานะ */}
-                  <col style={{ width: '14.5%' }} /> {/* เวลาเข้างาน */}
-                  <col style={{ width: '15.5%' }} /> {/* เวลาออกงาน */}
+                  <col style={{ width: '5%' }} />
+                  <col style={{ width: '15%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '20%' }} />
+                  <col style={{ width: '15%' }} />
+                  <col style={{ width: '12.5%' }} />
+                  <col style={{ width: '12.5%' }} />
                 </colgroup>
+
                 <TableHead>
                   <TableRow sx={{ '& th': { backgroundColor: 'salmon', fontWeight: 'bold' } }}>
                     <TableCell>ลำดับ</TableCell>
-                    <TableCell>วันที่</TableCell>
+                    <TableCell>
+                      วันที่
+                      <IconButton size="small" onClick={handleOpenDateMenu}>
+                        <FilterListIcon />
+                      </IconButton>
+                      <Menu anchorEl={dateMenuAnchorEl} open={Boolean(dateMenuAnchorEl)} onClose={handleCloseDateMenu}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={selectedDate}
+                            onChange={handleDateChange}
+                            renderInput={(params) => null}
+                          />
+                        </LocalizationProvider>
+                      </Menu>
+                    </TableCell>
                     <TableCell>ชื่อ</TableCell>
                     <TableCell>นามสกุล</TableCell>
-                    <TableCell>สถานะ</TableCell>
+
+                    <TableCell>
+                      สถานะ
+                      <IconButton size="small" onClick={handleOpenStatusMenu}>
+                        <FilterListIcon />
+                      </IconButton>
+
+                      <Menu
+                        anchorEl={statusMenuAnchorEl}
+                        open={Boolean(statusMenuAnchorEl)}
+                        onClose={handleCloseStatusMenu}
+                      >
+                        <MenuItem onClick={() => handleFilterChange('')}>ทั้งหมด</MenuItem>
+                        <MenuItem onClick={() => handleFilterChange('ทำงานปกติ')}>ทำงานปกติ</MenuItem>
+                        <MenuItem onClick={() => handleFilterChange('ลาป่วย')}>ลาป่วย</MenuItem>
+                        <MenuItem onClick={() => handleFilterChange('ลากิจ')}>ลากิจ</MenuItem>
+                      </Menu>
+                    </TableCell>
+
                     <TableCell>เวลาเข้างาน</TableCell>
                     <TableCell>เวลาออกงาน</TableCell>
                   </TableRow>
                 </TableHead>
+
                 <TableBody>
                   {filteredData.length > 0 ? (
                     filteredData.map((user, index) => (
                       <TableRow key={index} hover sx={{ '&:nth-of-type(odd)': { backgroundColor: 'wheat' } }}>
-                        <TableCell sx={{ width: '2%' }}>{index + 1}</TableCell>
-                        <TableCell sx={{ width: '15%' }}>{formatDate(user.loginTime)}</TableCell>
-                        <TableCell sx={{ width: '20%' }}>{user.firstName}</TableCell>
-                        <TableCell sx={{ width: '18%' }}>{user.lastName}</TableCell>
-                        <TableCell sx={{ width: '15%' }}>{user.status || '-'}</TableCell>
-                        <TableCell sx={{ width: '14.5%' }}>{formatTimes(user.loginTime)}</TableCell>
-                        <TableCell sx={{ width: '15.5%' }}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>{formatDate(user.loginTime)}</TableCell>
+                        <TableCell>{user.firstName}</TableCell>
+                        <TableCell>{user.lastName}</TableCell>
+                        <TableCell>{user.status || '-'}</TableCell>
+                        <TableCell>{formatTimes(user.loginTime)}</TableCell>
+                        <TableCell>
                           {user.logoutTime
                             ? formatTimes(user.logoutTime)
                             : (new Date(formatDate(user.loginTime)).getDate() < new Date().getDate() ? 'ยังไม่ออกงาน' : '-')
@@ -241,16 +299,20 @@ const Admin = () => {
                     ))
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} align="center">ไม่พบข้อมูล</TableCell>
+                      <TableCell colSpan={7} align="center">ไม่มีข้อมูล</TableCell>
                     </TableRow>
                   )}
                 </TableBody>
               </Table>
             </TableContainer>
-
-
           </CardContent>
         </Card>
+
+        <Box sx={{ textAlign: 'center', mt: 4 }}>
+          <Button variant="contained" color="primary" onClick={handleLogout}>
+            ออกจากระบบ
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
