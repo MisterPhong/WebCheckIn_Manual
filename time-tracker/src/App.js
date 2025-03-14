@@ -1,15 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginPage from './components/LoginPage';
-import DashboardPage from './components/DashboardPage';
-import DashboardPage1 from './components/DashboardPage1';
-import DashboardPage2 from './components/DashboardPage2';
-import Welcome from './components/Welcome';
-import ChnageManu from './components/ChnageManu';
-import Manual from './components/Manual';
-import ManualSup from './components/ManualS';
-import Admin from './components/Admin';
-import AdminLogin from './components/AdminLogin';
+import LoginPage from './components/login_page/LoginPage';
+import DashboardPage from './components/dashboard_normal/DashboardPage';
+import DashboardPage1 from './components/dashboard_sick/DashboardPage1';
+import DashboardPage2 from './components/dashboard_ business/DashboardPage2';
+import Welcome from './components/main_page/Welcome';
+import ChnageManu from './components/menu_all/ChnageManu';
+import Manual from './components/menu_all/Manual';
+import ManualSup from './components/menu_all/ManualS';
+import Admin from './components/admin_page/Admin';
+import AdminLogin from './components/admin_page/AdminLogin';
 
 const App = () => {
   return (

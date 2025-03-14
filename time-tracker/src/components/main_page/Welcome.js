@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Typography, Card, CardContent, Container, CardActions, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import version from '../version'; // ดึงค่าจาก package.json
+import version from '../../version'; // ดึงค่าจาก package.json
 
 const Welcome = () => {
   const navigate = useNavigate();
