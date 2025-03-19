@@ -100,7 +100,7 @@ const DashboardPage1 = () => {
 
       <Container maxWidth="md">
         {/* Card for User Information */}
-        <Card sx={{ mb: 4, boxShadow: 4 }}>
+        <Card sx={{ mb: 4, boxShadow: 4, marginTop: 10}}>
           <CardContent>
             <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
               ลาป่วยสำเร็จ
@@ -117,24 +117,7 @@ const DashboardPage1 = () => {
               }}
             >
               {/* รูปภาพ */}
-              <Box
-                sx={{
-                  width: 150,
-                  height: 150,
-                  overflow: 'hidden',
-                  borderRadius: '8px',
-                }}
-              >
-                <img
-                  src="https://png.pngtree.com/png-vector/20220930/ourmid/pngtree-paid-sick-days-rgb-color-icon-vacation-benefit-plan-vector-png-image_39457746.png"
-                  alt="User Profile"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                  }}
-                />
-              </Box>
+      
 
               {/* ข้อมูล */}
               <Box sx={{ textAlign: 'left' }}>

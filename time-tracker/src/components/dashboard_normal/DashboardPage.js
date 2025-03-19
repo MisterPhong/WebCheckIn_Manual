@@ -37,8 +37,12 @@ const DashboardPage = () => {
   const [isOutOfRange, setIsOutOfRange] = useState(false);
 
   // พิกัดออฟฟิศ
-  const targetLat = 13.845893;
-  const targetLon = 100.525539;
+  const targetLat = 16.251035398712936;
+  const targetLon = 103.25288661528052;
+
+
+  // lat: 16.251035398712936,
+  // lon: 103.25288661528052, // ออฟฟิศ
 
   // ฟังก์ชันคำนวณระยะทาง (กม.)
   const calculateDistance = (lat1, lon1, lat2, lon2) => {

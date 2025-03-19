@@ -15,9 +15,11 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const requiredLocation = {
-  lat: 13.845893,
-  lon: 100.525539, // ออฟฟิศ
+  lat: 16.251035398712936,
+  lon: 103.25288661528052, // ออฟฟิศ
 };
+
+
 
 const LoginPage = () => {
   const [firstName, setFirstName] = useState('');

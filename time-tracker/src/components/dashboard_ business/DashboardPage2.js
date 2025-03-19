@@ -103,7 +103,7 @@ const DashboardPage2 = () => {
 
       <Container maxWidth="md">
         {/* Card for User Information */}
-        <Card sx={{ mb: 4, boxShadow: 4 }}>
+        <Card sx={{ mb: 4, boxShadow: 4, marginTop: 10}}>
           <CardContent>
             <Typography variant="h5" align="center" color='#0b4999' gutterBottom>
               ลากิจสำเร็จ
@@ -119,25 +119,6 @@ const DashboardPage2 = () => {
                 mb: 2,
               }}
             >
-              {/* รูปภาพ */}
-              <Box
-                sx={{
-                  width: 150,
-                  height: 150,
-                  overflow: 'hidden',
-                  borderRadius: '8px',
-                }}
-              >
-                <img
-                  src="https://www.chulagradeuptutor.com/wp-content/uploads/2020/04/%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%A5%E0%B8%B2%E0%B8%87%E0%B8%B2%E0%B8%99.png"
-                  alt="User Profile"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'scale-down',
-                  }}
-                />
-              </Box>
 
               {/* ข้อมูล */}
               <Box sx={{ textAlign: 'left' }}>
